@@ -29,13 +29,13 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             error ? `${inputId}-error` : helperText ? `${inputId}-helper` : undefined
           }
           className={cn(
-            "flex h-10 w-full rounded-md border bg-background px-3 py-2 text-sm text-foreground",
+            "flex h-10 w-full rounded-md border-2 bg-background px-3 py-2 text-sm text-foreground",
             "placeholder:text-slate/50",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            "focus-visible:outline-none",
             "disabled:cursor-not-allowed disabled:bg-paper disabled:opacity-60",
             error
               ? "border-danger focus-visible:ring-danger/20"
-              : "border-border hover:border-ink/30",
+              : "border-border",
             className
           )}
           required={required}
