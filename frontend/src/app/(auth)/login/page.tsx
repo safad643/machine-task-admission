@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useLoginForm } from "@/hooks";
 import { routes } from "@/lib/routes";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui";
+import { AuthShell } from "@/components/auth/AuthShell";
 import { Button } from "@/components/ui";
 import { Input } from "@/components/ui";
 
@@ -12,54 +12,61 @@ export default function LoginPage() {
   const { register, formState: { errors } } = form;
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4">
-      <Card className="w-full max-w-sm">
-        <CardHeader className="items-center text-center pb-2">
-          <CardTitle className="text-xl">Welcome back</CardTitle>
-          <CardDescription>Sign in to your account to continue</CardDescription>
-        </CardHeader>
+    <AuthShell
+      title="Welcome back"
+      subtitle="Sign in to continue your child&apos;s admissions journey."
+      footer={
+        <>
+          No account yet?{" "}
+          <Link
+            href={routes.register}
+            className="font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
+          >
+            Create one
+          </Link>
+        </>
+      }
+    >
+      <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+        <Input
+          label="Email"
+          type="email"
+          placeholder="you@example.com"
+          error={errors.email?.message}
+          autoComplete="email"
+          required
+          className="h-12"
+          {...register("email")}
+        />
 
-        <CardContent>
-          <form onSubmit={submit} className="flex flex-col gap-4" noValidate>
-            <Input
-              label="Email"
-              type="email"
-              placeholder="you@example.com"
-              error={errors.email?.message}
-              autoComplete="email"
-              required
-              {...register("email")}
-            />
+        <Input
+          label="Password"
+          type="password"
+          placeholder="Enter your password"
+          error={errors.password?.message}
+          autoComplete="current-password"
+          required
+          className="h-12"
+          {...register("password")}
+        />
 
-            <Input
-              label="Password"
-              type="password"
-              placeholder="Enter your password"
-              error={errors.password?.message}
-              autoComplete="current-password"
-              required
-              {...register("password")}
-            />
-
-            {error && (
-              <p className="rounded-md bg-danger/10 px-3 py-2 text-sm font-medium text-danger-text">
-                {error}
-              </p>
-            )}
-
-            <Button type="submit" variant="secondary" size="lg" fullWidth isLoading={isLoading}>
-              Sign in
-            </Button>
-          </form>
-
-          <p className="mt-6 text-center text-sm text-slate">
-            No account yet?{" "}
-            <Link href={routes.register} className="font-medium text-brass hover:text-brass-light transition-colors">
-              Create one
-            </Link>
+        {error && (
+          <p className="rounded-lg bg-danger/10 px-3.5 py-2.5 text-sm font-medium text-danger-text">
+            {error}
           </p>
-        </CardContent>
-      </Card>
-    </div>
+        )}
+
+        <Button
+          type="submit"
+          variant="primary"
+          size="lg"
+          fullWidth
+          isLoading={isLoading}
+          className="mt-1 h-12"
+        >
+          Sign in
+        </Button>
+      </form>
+    </AuthShell>
   );
 }
