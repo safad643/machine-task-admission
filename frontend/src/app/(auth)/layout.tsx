@@ -1,20 +1,9 @@
-"use client";
-
-import { type ReactNode } from "react";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
 
-interface AuthShellProps {
-  title: string;
-  subtitle: string;
-  children: ReactNode;
-  footer: ReactNode;
-}
-
-export function AuthShell({ title, subtitle, children, footer }: AuthShellProps) {
+export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen w-full bg-ivory">
-      {/* Visual panel — hidden on small screens, signature side on desktop */}
       <aside className="auth-panel relative hidden w-[42%] flex-col justify-between overflow-hidden border-r border-stone/60 lg:flex">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-parchment via-parchment to-stone/30" />
 
@@ -70,10 +59,8 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
         </div>
       </aside>
 
-      {/* Form panel */}
       <main className="flex w-full flex-col justify-center px-6 py-12 lg:w-[58%] lg:px-16 xl:px-24">
         <div className="mx-auto w-full max-w-md">
-          {/* Mobile-only brand mark */}
           <div className="mb-10 flex items-center gap-3 lg:hidden">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-ivory">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -96,18 +83,7 @@ export function AuthShell({ title, subtitle, children, footer }: AuthShellProps)
             <span className="font-serif text-lg font-semibold tracking-tight">Admissions</span>
           </div>
 
-          <div className="mb-8">
-            <h1 className="font-serif text-4xl font-semibold tracking-tight text-foreground xl:text-5xl">
-              {title}
-            </h1>
-            <p className="mt-3 text-base text-sage">{subtitle}</p>
-          </div>
-
-          <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-            {children}
-          </div>
-
-          <div className="mt-6 text-center text-sm text-slate">{footer}</div>
+          {children}
         </div>
       </main>
     </div>
@@ -123,7 +99,6 @@ function AdmissionEnvelope({ className }: { className?: string }) {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
-      {/* Envelope body */}
       <rect
         x="20"
         y="60"
@@ -133,14 +108,12 @@ function AdmissionEnvelope({ className }: { className?: string }) {
         className="fill-ivory stroke-foreground"
         strokeWidth="2"
       />
-      {/* Envelope flap */}
       <path
         d="M20 60 L100 125 L180 60"
         className="fill-parchment stroke-foreground"
         strokeWidth="2"
         strokeLinejoin="round"
       />
-      {/* Inner shadow line */}
       <path
         d="M20 60 L100 125 L180 60"
         className="stroke-stone"
@@ -148,7 +121,6 @@ function AdmissionEnvelope({ className }: { className?: string }) {
         strokeLinejoin="round"
         opacity="0.6"
       />
-      {/* Wax seal */}
       <g className="animate-seal-pulse">
         <circle cx="100" cy="112" r="22" className="fill-seal" />
         <circle cx="100" cy="112" r="16" className="fill-seal-light" opacity="0.25" />
@@ -162,7 +134,6 @@ function AdmissionEnvelope({ className }: { className?: string }) {
           A
         </text>
       </g>
-      {/* Floating document peeking out */}
       <g className="animate-float">
         <rect
           x="55"
