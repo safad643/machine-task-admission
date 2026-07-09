@@ -15,8 +15,6 @@ export function StudentEditForm({
   onSuccess,
   onCancel,
 }: StudentEditFormProps) {
-  const isLocked = student.feePaid === true;
-
   const {
     form,
     submit,
@@ -42,21 +40,12 @@ export function StudentEditForm({
 
   return (
     <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-      {isLocked && (
-        <div className="mb-5 rounded-lg border border-danger/20 bg-danger/10 p-3.5">
-          <p className="text-sm font-medium text-danger-text">
-            Student details are locked after registration fee is paid.
-          </p>
-        </div>
-      )}
-
       <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
         <Input
           label="Student Name"
           placeholder="e.g. Jane Doe"
           error={errors.studentName?.message}
           required
-          disabled={isLocked}
           {...register("studentName")}
         />
 
@@ -65,7 +54,6 @@ export function StudentEditForm({
           type="date"
           error={errors.dateOfBirth?.message}
           required
-          disabled={isLocked}
           {...register("dateOfBirth")}
         />
 
@@ -73,7 +61,6 @@ export function StudentEditForm({
           label="Gender"
           error={errors.gender?.message}
           required
-          disabled={isLocked}
           {...register("gender")}
         >
           <option value={Gender.MALE}>Male</option>
@@ -86,7 +73,6 @@ export function StudentEditForm({
           placeholder="e.g. Springdale Elementary"
           error={errors.previousSchool?.message}
           required
-          disabled={isLocked}
           {...register("previousSchool")}
         />
 
@@ -95,7 +81,6 @@ export function StudentEditForm({
           placeholder="e.g. Grade 5"
           error={errors.applyingGrade?.message}
           required
-          disabled={isLocked}
           {...register("applyingGrade")}
         />
 
@@ -125,7 +110,7 @@ export function StudentEditForm({
           >
             Cancel
           </Button>
-          <Button type="submit" isLoading={isMutating} disabled={isLocked}>
+          <Button type="submit" isLoading={isMutating}>
             Save Changes
           </Button>
         </div>

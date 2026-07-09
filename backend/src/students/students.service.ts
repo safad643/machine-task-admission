@@ -38,6 +38,7 @@ export class StudentsService {
   async findAllByParent(parentId: string): Promise<StudentDocument[]> {
     return this.studentModel
       .find({ parentId: new Types.ObjectId(parentId) })
+      .populate('slotId')
       .sort({ createdAt: -1 })
       .exec();
   }
@@ -46,7 +47,10 @@ export class StudentsService {
     id: string,
     parentId: string,
   ): Promise<StudentDocument> {
-    const student = await this.studentModel.findById(id).exec();
+    const student = await this.studentModel
+      .findById(id)
+      .populate('slotId')
+      .exec();
 
     if (!student) {
       throw new NotFoundException('Student not found');
@@ -91,6 +95,7 @@ export class StudentsService {
 
     const updated = await this.studentModel
       .findByIdAndUpdate(id, { $set: updatePayload }, { new: true })
+      .populate('slotId')
       .exec();
 
     if (!updated) {
@@ -119,6 +124,7 @@ export class StudentsService {
         },
         { new: true },
       )
+      .populate('slotId')
       .exec();
 
     if (!updated) {

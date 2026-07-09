@@ -44,7 +44,7 @@ export interface Student {
   status: StudentStatus;
   examScore: number | null;
   assignedCourse: Course | null;
-  slotId: string | null;
+  slotId: ExamSlot | null;
   feePaid: boolean;
   createdAt: string;
   updatedAt: string;

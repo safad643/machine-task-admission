@@ -1,4 +1,5 @@
 import { StudentStatus, Gender, Course } from "@/types";
+import type { ExamSlot } from "@/types";
 import type { BadgeProps } from "@/components/ui/Badge";
 
 export const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
@@ -45,4 +46,23 @@ export function formatDateTime(value: string): string {
     hour: "2-digit",
     minute: "2-digit",
   });
+}
+
+export function formatSlotRange(slot: ExamSlot): string {
+  const start = new Date(slot.startTime);
+  const end = new Date(slot.endTime);
+  const datePart = start.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+  const startPart = start.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const endPart = end.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return `${datePart}, ${startPart} – ${endPart}`;
 }

@@ -14,6 +14,7 @@ import {
   formatCourseLabel,
   formatDate,
   formatDateTime,
+  formatSlotRange,
 } from "../utils";
 
 interface StudentDetailCardProps {
@@ -83,7 +84,7 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
           <div>
             <dt className="text-sm font-medium text-slate">Exam Slot</dt>
             <dd className="mt-1 text-base text-foreground">
-              {student.slotId ? student.slotId : "Not booked"}
+              {student.slotId ? formatSlotRange(student.slotId) : "Not booked"}
             </dd>
           </div>
           <div>
