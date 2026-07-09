@@ -16,6 +16,7 @@ import {
   formatDateTime,
   formatSlotRange,
 } from "../utils";
+import { StatusTimeline } from "./StatusTimeline";
 
 interface StudentDetailCardProps {
   student: Student;
@@ -25,6 +26,9 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
   return (
     <Card>
       <CardHeader>
+        <div className="mb-4">
+          <StatusTimeline status={student.status} />
+        </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <CardTitle>{student.studentName}</CardTitle>
