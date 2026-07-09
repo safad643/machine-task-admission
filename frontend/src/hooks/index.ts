@@ -5,3 +5,6 @@ export { useLogin, useRegister } from "./useAuth";
 export { useLoginForm, useRegisterForm } from "./useAuthForm";
 export { useStudentForm } from "./useStudentForm";
 export { useStudentEditForm, mapStudentToFormData } from "./useStudentEditForm";
+export { useScoreForm } from "./useScoreForm";
+export { useCourseForm } from "./useCourseForm";
+export { useSlotForm } from "./useSlotForm";

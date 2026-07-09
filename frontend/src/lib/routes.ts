@@ -18,6 +18,7 @@ export const routes = {
     applicationScore: (id: string) => `/admission-team/applications/${id}/score`,
     applicationAssign: (id: string) => `/admission-team/applications/${id}/assign`,
     slots: "/admission-team/slots",
+    completed: "/admission-team/completed",
   },
 } as const;
 
