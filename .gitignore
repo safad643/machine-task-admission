@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # Skills lock
 skills-lock.json
+
+# opencode index
+.opencode/
