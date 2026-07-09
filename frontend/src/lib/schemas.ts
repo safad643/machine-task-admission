@@ -31,7 +31,13 @@ export const createStudentSchema = z.object({
     .string()
     .min(1, "Student name is required")
     .max(100, "Student name must be under 100 characters"),
-  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  dateOfBirth: z
+    .string()
+    .min(1, "Date of birth is required")
+    .regex(/^\d{4}-\d{2}-\d{2}$/, "Date of birth must be a valid date")
+    .refine((value) => !isNaN(Date.parse(value)), {
+      message: "Date of birth must be a valid date",
+    }),
   gender: z.nativeEnum(Gender),
   previousSchool: z.string().min(1, "Previous school is required"),
   applyingGrade: z.string().min(1, "Applying grade is required"),

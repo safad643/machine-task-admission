@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useStudents } from "./useStudents";
 import {
-  createStudentSchema,
-  type CreateStudentFormData,
+  updateStudentSchema,
+  type UpdateStudentFormData,
 } from "@/lib/schemas";
 import { Gender } from "@/types";
 
 interface UseStudentEditFormOptions {
   studentId: string;
-  initialData: CreateStudentFormData;
+  initialData: UpdateStudentFormData;
   onSuccess?: () => void;
 }
 
@@ -23,8 +23,8 @@ export function useStudentEditForm({
 }: UseStudentEditFormOptions) {
   const { updateStudent, isMutating, error, clearError } = useStudents();
 
-  const form = useForm<CreateStudentFormData>({
-    resolver: zodResolver(createStudentSchema),
+  const form = useForm<UpdateStudentFormData>({
+    resolver: zodResolver(updateStudentSchema),
     defaultValues: initialData,
   });
 
@@ -32,7 +32,7 @@ export function useStudentEditForm({
     form.reset(initialData);
   }, [form, initialData]);
 
-  async function submit(data: CreateStudentFormData) {
+  async function submit(data: UpdateStudentFormData) {
     try {
       await updateStudent(studentId, data);
       onSuccess?.();
@@ -57,7 +57,7 @@ export function mapStudentToFormData(student: {
   gender: Gender;
   previousSchool: string;
   applyingGrade: string;
-}): CreateStudentFormData {
+}): UpdateStudentFormData {
   return {
     studentName: student.studentName,
     dateOfBirth: student.dateOfBirth,

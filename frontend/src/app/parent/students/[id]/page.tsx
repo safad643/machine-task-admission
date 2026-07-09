@@ -7,6 +7,7 @@ import { useStudents } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui";
+import { StudentStatus } from "@/types";
 import { StudentDetailCard } from "./components/StudentDetailCard";
 import { StudentEditForm } from "./components/StudentEditForm";
 import { PayRegistrationFeeDialog } from "./components/PayRegistrationFeeDialog";
@@ -76,6 +77,12 @@ export default function StudentDetailPage() {
               onPaid={() => void fetchStudent(id)}
             />
           )}
+          {student?.status === StudentStatus.REGISTRATION_FEE_PAID &&
+            !student?.slotId && (
+              <Link href={routes.parent.bookSlot(id)}>
+                <Button>Book Exam Slot</Button>
+              </Link>
+            )}
         </div>
       </div>
 

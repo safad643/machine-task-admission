@@ -8,6 +8,7 @@ export const routes = {
     students: "/parent/students",
     newStudent: "/parent/students/new",
     studentDetail: (id: string) => `/parent/students/${id}`,
+    bookSlot: (id: string) => `/parent/students/${id}/book-slot`,
   },
 
   admissionTeam: {
