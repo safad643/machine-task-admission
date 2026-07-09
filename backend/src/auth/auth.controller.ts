@@ -1,16 +1,21 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Post,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
 import type { Response } from 'express';
-import { AuthService, SafeUser } from './auth.service.js';
+import { AuthService } from './auth.service.js';
+import type { SafeUser } from './auth.service.js';
 import { AUTH_COOKIE_NAME, getAuthCookieOptions } from './cookie.config.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
 import { LoginDto } from './dto/login.dto.js';
 import { RegisterDto } from './dto/register.dto.js';
 
@@ -52,5 +57,11 @@ export class AuthController {
     res.clearCookie(AUTH_COOKIE_NAME, cookieOptions);
 
     return { message: 'Logged out successfully' };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  me(@CurrentUser() user: SafeUser): SafeUser {
+    return user;
   }
 }
