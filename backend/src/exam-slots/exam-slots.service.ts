@@ -28,8 +28,25 @@ export class ExamSlotsService {
   ) {}
 
   async create(dto: CreateExamSlotDto): Promise<ExamSlotDocument> {
+    const startTime = new Date(dto.startTime);
+    const endTime = new Date(dto.endTime);
+
+    const overlappingSlot = await this.examSlotModel
+      .findOne({
+        startTime: { $lt: endTime },
+        endTime: { $gt: startTime },
+      })
+      .exec();
+
+    if (overlappingSlot) {
+      throw new ConflictException(
+        'Another exam slot overlaps with the requested time range',
+      );
+    }
+
     const slot = new this.examSlotModel({
-      startTime: new Date(dto.startTime),
+      startTime,
+      endTime,
       capacity: dto.capacity,
       bookedCount: 0,
     });

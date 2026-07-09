@@ -12,6 +12,9 @@ export class ExamSlot {
   @Prop({ required: true })
   startTime: Date;
 
+  @Prop({ required: true })
+  endTime: Date;
+
   @Prop({ required: true, min: 1, default: 10 })
   capacity: number;
 

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AdmissionModule } from './admission/admission.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { StudentsModule } from './students/students.module.js';
 import { AppConfigModule } from './config/config.module.js';
@@ -16,6 +17,7 @@ import { ExamSlotsModule } from './exam-slots/exam-slots.module.js';
     AuthModule,
     StudentsModule,
     ExamSlotsModule,
+    AdmissionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

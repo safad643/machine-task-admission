@@ -15,6 +15,12 @@ export enum Gender {
   OTHER = 'OTHER',
 }
 
+export enum Course {
+  SCIENCE = 'SCIENCE',
+  COMMERCE = 'COMMERCE',
+  ARTS = 'ARTS',
+}
+
 export type StudentDocument = HydratedDocument<Student>;
 
 @Schema({
@@ -52,8 +58,8 @@ export class Student {
   @Prop({ type: Number, min: 0, max: 100, default: null })
   examScore: number | null;
 
-  @Prop({ type: String, default: null, trim: true })
-  assignedCourse: string | null;
+  @Prop({ type: String, enum: Course, default: null })
+  assignedCourse: Course | null;
 
   @Prop({ type: Types.ObjectId, ref: 'ExamSlot', default: null })
   slotId: Types.ObjectId | null;
