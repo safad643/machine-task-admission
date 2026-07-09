@@ -60,10 +60,7 @@ export interface ExamSlot {
   createdAt: string;
 }
 
-export interface LoginResponse {
-  role: UserRole;
-  userId: string;
-}
+export type LoginResponse = SafeUser;
 
 export interface RegisterDto {
   email: string;

@@ -16,7 +16,7 @@ export function useLogin() {
     setIsLoading(true);
     try {
       const res = await api.post<LoginResponse>(endpoints.auth.login, data);
-      setSession(res.data.userId, res.data.role);
+      setSession(res.data);
       return res.data;
     } catch (err) {
       const apiError = err as ApiError;

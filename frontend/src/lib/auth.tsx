@@ -6,11 +6,12 @@ import { endpoints } from "./endpoints";
 import type { SafeUser } from "@/types";
 
 interface AuthContextValue {
+  user: SafeUser | null;
   userId: string | null;
   role: string | null;
   isAuthenticated: boolean;
   isSessionLoading: boolean;
-  setSession: (userId: string, role: string) => void;
+  setSession: (user: SafeUser) => void;
   clearSession: () => void;
   logout: () => Promise<void>;
 }
@@ -22,34 +23,29 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [userId, setUserId] = useState<string | null>(null);
-  const [role, setRole] = useState<string | null>(null);
+  const [user, setUser] = useState<SafeUser | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
 
   useEffect(() => {
     api
       .get<SafeUser>(endpoints.auth.me)
       .then(({ data }) => {
-        setUserId(data._id);
-        setRole(data.role);
+        setUser(data);
       })
       .catch(() => {
-        setUserId(null);
-        setRole(null);
+        setUser(null);
       })
       .finally(() => {
         setIsSessionLoading(false);
       });
   }, []);
 
-  function setSession(id: string, userRole: string) {
-    setUserId(id);
-    setRole(userRole);
+  function setSession(nextUser: SafeUser) {
+    setUser(nextUser);
   }
 
   function clearSession() {
-    setUserId(null);
-    setRole(null);
+    setUser(null);
   }
 
   async function logout() {
@@ -62,9 +58,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
   }
 
   const value: AuthContextValue = {
-    userId,
-    role,
-    isAuthenticated: Boolean(userId && role),
+    user,
+    userId: user?._id ?? null,
+    role: user?.role ?? null,
+    isAuthenticated: Boolean(user),
     isSessionLoading,
     setSession,
     clearSession,

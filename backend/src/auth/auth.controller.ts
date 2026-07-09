@@ -38,16 +38,13 @@ export class AuthController {
   async login(
     @Body() dto: LoginDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<{ role: string; userId: string }> {
+  ): Promise<SafeUser> {
     const { user, token } = await this.authService.login(dto);
 
     const cookieOptions = getAuthCookieOptions(this.configService);
     res.cookie(AUTH_COOKIE_NAME, token, cookieOptions);
 
-    return {
-      role: user.role,
-      userId: user._id,
-    };
+    return user;
   }
 
   @Post('logout')

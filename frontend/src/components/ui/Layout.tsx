@@ -2,6 +2,7 @@
 
 import { type ReactNode, useState } from "react";
 import { cn } from "@/lib/utils";
+import { useAuth } from "@/lib/auth";
 import { Button } from "./Button";
 
 export interface NavItem {
@@ -15,20 +16,14 @@ export interface LayoutProps {
   children: ReactNode;
   title?: string;
   navItems?: NavItem[];
-  user?: {
-    name: string;
-    role: string;
-  };
-  onLogout?: () => void;
 }
 
 export function Layout({
   children,
   title,
   navItems = [],
-  user,
-  onLogout,
 }: LayoutProps) {
+  const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
@@ -67,17 +62,15 @@ export function Layout({
             <div className="rounded-md bg-background p-3">
               <p className="text-sm font-medium text-foreground">{user.name}</p>
               <p className="text-xs text-slate">{user.role}</p>
-              {onLogout && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  fullWidth
-                  className="mt-2 justify-start"
-                  onClick={onLogout}
-                >
-                  Sign out
-                </Button>
-              )}
+              <Button
+                variant="ghost"
+                size="sm"
+                fullWidth
+                className="mt-2 justify-start"
+                onClick={() => logout()}
+              >
+                Sign out
+              </Button>
             </div>
           </div>
         )}
@@ -169,13 +162,13 @@ export function Layout({
                 </a>
               ))}
             </nav>
-            {user && onLogout && (
+            {user && (
               <Button
                 variant="ghost"
                 size="sm"
                 fullWidth
                 className="mt-3 justify-start"
-                onClick={onLogout}
+                onClick={() => logout()}
               >
                 Sign out
               </Button>
