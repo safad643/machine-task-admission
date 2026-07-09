@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { Gender } from "@/types";
 
 export const loginSchema = z.object({
   email: z
@@ -31,7 +32,7 @@ export const createStudentSchema = z.object({
     .min(1, "Student name is required")
     .max(100, "Student name must be under 100 characters"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
-  gender: z.enum(["MALE", "FEMALE", "OTHER"]),
+  gender: z.nativeEnum(Gender),
   previousSchool: z.string().min(1, "Previous school is required"),
   applyingGrade: z.string().min(1, "Applying grade is required"),
 });
