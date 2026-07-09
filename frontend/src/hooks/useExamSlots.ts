@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { api, type ApiError } from "@/lib/api";
+import { endpoints } from "@/lib/endpoints";
 import type { ExamSlot, CreateExamSlotDto } from "@/types";
 
 interface UseExamSlotsReturn {
@@ -28,7 +29,7 @@ export function useExamSlots(): UseExamSlotsReturn {
     setError(null);
 
     try {
-      const { data } = await api.get<ExamSlot[]>("/exam-slots");
+      const { data } = await api.get<ExamSlot[]>(endpoints.examSlots.list);
       setSlots(data);
     } catch (err) {
       const apiError = err as ApiError;
@@ -43,7 +44,7 @@ export function useExamSlots(): UseExamSlotsReturn {
     setError(null);
 
     try {
-      const { data } = await api.get<ExamSlot[]>("/exam-slots/all");
+      const { data } = await api.get<ExamSlot[]>(endpoints.examSlots.all);
       setSlots(data);
     } catch (err) {
       const apiError = err as ApiError;
@@ -58,7 +59,7 @@ export function useExamSlots(): UseExamSlotsReturn {
     setError(null);
 
     try {
-      const { data } = await api.post<ExamSlot>("/exam-slots", dto);
+      const { data } = await api.post<ExamSlot>(endpoints.examSlots.list, dto);
       setSlots((prev) => (prev ? [...prev, data] : [data]));
       return data;
     } catch (err) {
@@ -75,7 +76,7 @@ export function useExamSlots(): UseExamSlotsReturn {
     setError(null);
 
     try {
-      await api.post(`/exam-slots/${slotId}/book`, { studentId });
+      await api.post(endpoints.examSlots.book(slotId), { studentId });
       setSlots((prev) =>
         prev
           ? prev.map((slot) =>
@@ -99,7 +100,7 @@ export function useExamSlots(): UseExamSlotsReturn {
     setError(null);
 
     try {
-      await api.delete(`/exam-slots/${id}`);
+      await api.delete(endpoints.examSlots.detail(id));
       setSlots((prev) => (prev ? prev.filter((slot) => slot._id !== id) : prev));
     } catch (err) {
       const apiError = err as ApiError;

@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { api, type ApiError } from "@/lib/api";
+import { endpoints } from "@/lib/endpoints";
 import type { Student, CreateStudentDto, UpdateStudentDto } from "@/types";
 
 interface UseStudentsReturn {
@@ -30,7 +31,7 @@ export function useStudents(): UseStudentsReturn {
     setError(null);
 
     try {
-      const { data } = await api.get<Student[]>("/students");
+      const { data } = await api.get<Student[]>(endpoints.students.list);
       setStudents(data);
     } catch (err) {
       const apiError = err as ApiError;
@@ -45,7 +46,7 @@ export function useStudents(): UseStudentsReturn {
     setError(null);
 
     try {
-      const { data } = await api.get<Student>(`/students/${id}`);
+      const { data } = await api.get<Student>(endpoints.students.detail(id));
       setStudent(data);
     } catch (err) {
       const apiError = err as ApiError;
@@ -60,7 +61,7 @@ export function useStudents(): UseStudentsReturn {
     setError(null);
 
     try {
-      const { data } = await api.post<Student>("/students", dto);
+      const { data } = await api.post<Student>(endpoints.students.list, dto);
       setStudents((prev) => (prev ? [data, ...prev] : [data]));
       return data;
     } catch (err) {
@@ -77,7 +78,7 @@ export function useStudents(): UseStudentsReturn {
     setError(null);
 
     try {
-      const { data } = await api.patch<Student>(`/students/${id}`, dto);
+      const { data } = await api.patch<Student>(endpoints.students.detail(id), dto);
       setStudent(data);
       setStudents((prev) =>
         prev ? prev.map((s) => (s._id === id ? data : s)) : prev
@@ -97,7 +98,7 @@ export function useStudents(): UseStudentsReturn {
     setError(null);
 
     try {
-      const { data } = await api.post<Student>(`/students/${id}/registration-fee`);
+      const { data } = await api.post<Student>(endpoints.students.registrationFee(id));
       setStudent(data);
       setStudents((prev) =>
         prev ? prev.map((s) => (s._id === id ? data : s)) : prev

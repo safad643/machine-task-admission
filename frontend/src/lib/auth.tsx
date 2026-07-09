@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { api, type ApiError } from "./api";
+import { endpoints } from "./endpoints";
 import type { LoginDto, LoginResponse, RegisterDto, SafeUser } from "@/types";
 
 interface AuthContextValue {
@@ -30,7 +31,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
   useEffect(() => {
     api
-      .get<SafeUser>("/auth/me")
+      .get<SafeUser>(endpoints.auth.me)
       .then(({ data }) => {
         setUserId(data._id);
         setRole(data.role);
@@ -50,7 +51,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
 
     try {
-      const { data } = await api.post<LoginResponse>("/auth/login", dto);
+      const { data } = await api.post<LoginResponse>(endpoints.auth.login, dto);
       setUserId(data.userId);
       setRole(data.role);
     } catch (err) {
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
 
     try {
-      const { data } = await api.post<SafeUser>("/auth/register", dto);
+      const { data } = await api.post<SafeUser>(endpoints.auth.register, dto);
       return data;
     } catch (err) {
       const apiError = err as ApiError;
@@ -83,7 +84,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setError(null);
 
     try {
-      await api.post("/auth/logout");
+      await api.post(endpoints.auth.logout);
     } catch (err) {
       const apiError = err as ApiError;
       console.warn("Logout API call failed:", apiError.message);

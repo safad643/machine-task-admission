@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { api, type ApiError } from "@/lib/api";
+import { endpoints } from "@/lib/endpoints";
 import type { Student, StudentStatus, Course } from "@/types";
 
 interface UseApplicationsReturn {
@@ -30,8 +31,8 @@ export function useApplications(): UseApplicationsReturn {
 
     try {
       const url = status
-        ? `/admission/applications?status=${encodeURIComponent(status)}`
-        : "/admission/applications";
+        ? `${endpoints.admission.applications}?status=${encodeURIComponent(status)}`
+        : endpoints.admission.applications;
       const { data } = await api.get<Student[]>(url);
       setApplications(data);
     } catch (err) {
@@ -47,7 +48,7 @@ export function useApplications(): UseApplicationsReturn {
     setError(null);
 
     try {
-      const { data } = await api.get<Student>(`/admission/applications/${id}`);
+      const { data } = await api.get<Student>(endpoints.admission.applicationDetail(id));
       setApplication(data);
     } catch (err) {
       const apiError = err as ApiError;
@@ -63,7 +64,7 @@ export function useApplications(): UseApplicationsReturn {
 
     try {
       const { data } = await api.patch<Student>(
-        `/admission/applications/${id}/score`,
+        endpoints.admission.score(id),
         { examScore }
       );
       setApplication(data);
@@ -86,7 +87,7 @@ export function useApplications(): UseApplicationsReturn {
 
     try {
       const { data } = await api.patch<Student>(
-        `/admission/applications/${id}/assign-course`,
+        endpoints.admission.assignCourse(id),
         { assignedCourse }
       );
       setApplication(data);
