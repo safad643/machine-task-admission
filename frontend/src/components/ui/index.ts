@@ -18,3 +18,4 @@ export {
 export { Badge, type BadgeProps } from "./Badge";
 export { Loader, type LoaderProps } from "./Loader";
 export { Layout, type LayoutProps, type NavItem } from "./Layout";
+export { Confirmation, type ConfirmationProps } from "./Confirmation";

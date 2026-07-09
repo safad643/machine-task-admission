@@ -4,3 +4,4 @@ export { useApplications } from "./useApplications";
 export { useLogin, useRegister } from "./useAuth";
 export { useLoginForm, useRegisterForm } from "./useAuthForm";
 export { useStudentForm } from "./useStudentForm";
+export { useStudentEditForm, mapStudentToFormData } from "./useStudentEditForm";

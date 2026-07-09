@@ -1,24 +1,46 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useStudents } from "@/hooks/useStudents";
+import { useStudents } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui";
 import { StudentDetailCard } from "./components/StudentDetailCard";
+import { StudentEditForm } from "./components/StudentEditForm";
+import { PayRegistrationFeeDialog } from "./components/PayRegistrationFeeDialog";
 
 export default function StudentDetailPage() {
   const params = useParams();
   const id = typeof params.id === "string" ? params.id : "";
-  const { student, isLoading, error, fetchStudent, clearError } = useStudents();
+  const {
+    student,
+    isLoading,
+    isMutating,
+    error,
+    fetchStudent,
+    payRegistrationFee,
+    clearError,
+  } = useStudents();
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (id) {
       fetchStudent(id);
     }
   }, [id, fetchStudent]);
+
+  const isLocked = student?.feePaid === true;
+
+  function handleEditSuccess() {
+    setIsEditing(false);
+    void fetchStudent(id);
+  }
+
+  function handleCancelEdit() {
+    setIsEditing(false);
+  }
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -40,13 +62,30 @@ export default function StudentDetailPage() {
             View and manage this application.
           </p>
         </div>
-        <Link
-          href={`${routes.parent.studentDetail(id)}/edit`}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Edit
-        </Link>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          {!isEditing && (
+            <Button onClick={() => setIsEditing(true)} disabled={isLocked}>
+              {isLocked ? "Locked" : "Edit"}
+            </Button>
+          )}
+          {student && (
+            <PayRegistrationFeeDialog
+              student={student}
+              isMutating={isMutating}
+              onPay={payRegistrationFee}
+              onPaid={() => void fetchStudent(id)}
+            />
+          )}
+        </div>
       </div>
+
+      {isLocked && (
+        <Card className="mb-6 border-warning/20 bg-warning/10 p-4">
+          <p className="text-sm font-medium text-warning">
+            Student details are locked after registration fee is paid.
+          </p>
+        </Card>
+      )}
 
       {error && (
         <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
@@ -57,7 +96,7 @@ export default function StudentDetailPage() {
               size="sm"
               onClick={() => {
                 clearError();
-                fetchStudent(id);
+                void fetchStudent(id);
               }}
             >
               Try again
@@ -78,7 +117,18 @@ export default function StudentDetailPage() {
         </Card>
       )}
 
-      {!isLoading && student && <StudentDetailCard student={student} />}
+      {!isLoading && student && !isEditing && (
+        <StudentDetailCard student={student} />
+      )}
+
+      {!isLoading && student && isEditing && (
+        <StudentEditForm
+          student={student}
+          onSuccess={handleEditSuccess}
+          onCancel={handleCancelEdit}
+        />
+      )}
+
     </div>
   );
 }
