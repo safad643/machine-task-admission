@@ -3,7 +3,9 @@ import { CookieOptions } from 'express';
 
 export const AUTH_COOKIE_NAME = 'token';
 
-export function getAuthCookieOptions(configService: ConfigService): CookieOptions {
+export function getAuthCookieOptions(
+  configService: ConfigService,
+): CookieOptions {
   const secure = configService.get<string | boolean>('COOKIE_SECURE');
   const sameSite = configService.get<string>('COOKIE_SAMESITE') ?? 'lax';
 
