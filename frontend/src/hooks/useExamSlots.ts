@@ -1,17 +1,13 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { api, type ApiError } from "@/lib/api";
 import { endpoints } from "@/lib/endpoints";
 import type { ExamSlot, CreateExamSlotDto } from "@/types";
 
 interface UseExamSlotsReturn {
-  slots: ExamSlot[] | null;
-  isLoading: boolean;
   isMutating: boolean;
   error: string | null;
-  fetchAvailableSlots: () => Promise<void>;
-  fetchAllSlots: () => Promise<void>;
   createSlot: (dto: CreateExamSlotDto) => Promise<ExamSlot>;
   bookSlot: (slotId: string, studentId: string) => Promise<void>;
   deleteSlot: (id: string) => Promise<void>;
@@ -19,40 +15,8 @@ interface UseExamSlotsReturn {
 }
 
 export function useExamSlots(): UseExamSlotsReturn {
-  const [slots, setSlots] = useState<ExamSlot[] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const fetchAvailableSlots = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { data } = await api.get<ExamSlot[]>(endpoints.examSlots.list);
-      setSlots(data);
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  const fetchAllSlots = useCallback(async () => {
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const { data } = await api.get<ExamSlot[]>(endpoints.examSlots.all);
-      setSlots(data);
-    } catch (err) {
-      const apiError = err as ApiError;
-      setError(apiError.message);
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
 
   async function createSlot(dto: CreateExamSlotDto) {
     setIsMutating(true);
@@ -60,7 +24,6 @@ export function useExamSlots(): UseExamSlotsReturn {
 
     try {
       const { data } = await api.post<ExamSlot>(endpoints.examSlots.list, dto);
-      setSlots((prev) => (prev ? [...prev, data] : [data]));
       return data;
     } catch (err) {
       const apiError = err as ApiError;
@@ -77,15 +40,6 @@ export function useExamSlots(): UseExamSlotsReturn {
 
     try {
       await api.post(endpoints.examSlots.book(slotId), { studentId });
-      setSlots((prev) =>
-        prev
-          ? prev.map((slot) =>
-              slot._id === slotId
-                ? { ...slot, bookedCount: slot.bookedCount + 1 }
-                : slot
-            )
-          : prev
-      );
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.message);
@@ -101,7 +55,6 @@ export function useExamSlots(): UseExamSlotsReturn {
 
     try {
       await api.delete(endpoints.examSlots.detail(id));
-      setSlots((prev) => (prev ? prev.filter((slot) => slot._id !== id) : prev));
     } catch (err) {
       const apiError = err as ApiError;
       setError(apiError.message);
@@ -112,12 +65,8 @@ export function useExamSlots(): UseExamSlotsReturn {
   }
 
   return {
-    slots,
-    isLoading,
     isMutating,
     error,
-    fetchAvailableSlots,
-    fetchAllSlots,
     createSlot,
     bookSlot,
     deleteSlot,

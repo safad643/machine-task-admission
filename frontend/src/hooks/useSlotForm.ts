@@ -10,6 +10,7 @@ interface UseSlotFormOptions {
   isMutating: boolean;
   error: string | null;
   clearError: () => void;
+  onSuccess?: () => void;
 }
 
 export function useSlotForm({
@@ -17,6 +18,7 @@ export function useSlotForm({
   isMutating,
   error,
   clearError,
+  onSuccess,
 }: UseSlotFormOptions) {
   const form = useForm<ExamSlotFormData>({
     resolver: zodResolver(examSlotSchema),
@@ -39,6 +41,7 @@ export function useSlotForm({
         endTime: "",
         capacity: "10",
       });
+      onSuccess?.();
     } catch {
       // Error is already captured in useExamSlots; swallow to avoid
       // unhandled-rejection warnings from react-hook-form's handleSubmit.

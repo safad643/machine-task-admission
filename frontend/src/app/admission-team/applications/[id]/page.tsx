@@ -1,26 +1,20 @@
-"use client";
-
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
 import Link from "next/link";
-import { useApplications } from "@/hooks/useApplications";
+import { fetchWithAuth } from "@/lib/data";
+import { endpoints } from "@/lib/endpoints";
 import { routes } from "@/lib/routes";
-import { Button, Loading } from "@/components/ui";
-import { Card } from "@/components/ui/Card";
-import { StudentStatus } from "@/types";
+import { Student, StudentStatus } from "@/types";
 import { StudentDetailCard } from "@/app/parent/students/[id]/components/StudentDetailCard";
 
-export default function ApplicationDetailPage() {
-  const params = useParams();
-  const id = typeof params.id === "string" ? params.id : "";
-  const { application, isLoading, error, fetchApplication, clearError } =
-    useApplications();
+export default async function ApplicationDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  useEffect(() => {
-    if (id) {
-      void fetchApplication(id);
-    }
-  }, [id, fetchApplication]);
+  const application = await fetchWithAuth<Student>(
+    endpoints.admission.applicationDetail(id)
+  );
 
   return (
     <div className="mx-auto max-w-3xl">
@@ -43,50 +37,26 @@ export default function ApplicationDetailPage() {
           </p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          {application?.status === StudentStatus.SLOT_BOOKED && (
-            <Link href={routes.admissionTeam.applicationScore(id)}>
-              <Button>Enter Exam Score</Button>
+          {application.status === StudentStatus.SLOT_BOOKED && (
+            <Link
+              href={routes.admissionTeam.applicationScore(id)}
+              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Enter Exam Score
             </Link>
           )}
-          {application?.status === StudentStatus.EXAM_COMPLETED && (
-            <Link href={routes.admissionTeam.applicationAssign(id)}>
-              <Button>Assign Course</Button>
+          {application.status === StudentStatus.EXAM_COMPLETED && (
+            <Link
+              href={routes.admissionTeam.applicationAssign(id)}
+              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            >
+              Assign Course
             </Link>
           )}
         </div>
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                clearError();
-                void fetchApplication(id);
-              }}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {isLoading && (
-        <Card className="p-12 text-center">
-          <Loading message="Loading application details..." className="min-h-0" />
-        </Card>
-      )}
-
-      {!isLoading && !error && !application && (
-        <Card className="p-12 text-center">
-          <p className="text-slate">Application not found.</p>
-        </Card>
-      )}
-
-      {!isLoading && application && <StudentDetailCard student={application} />}
+      <StudentDetailCard student={application} />
     </div>
   );
 }

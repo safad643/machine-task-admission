@@ -1,132 +1,20 @@
-"use client";
+import { fetchWithAuth } from "@/lib/data";
+import { endpoints } from "@/lib/endpoints";
+import { Student } from "@/types";
+import { StudentDetailClient } from "./components/StudentDetailClient";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import Link from "next/link";
-import { useStudents } from "@/hooks";
-import { routes } from "@/lib/routes";
-import { Card } from "@/components/ui/Card";
-import { Button, Loading } from "@/components/ui";
-import { StudentStatus } from "@/types";
-import { StudentDetailCard } from "./components/StudentDetailCard";
-import { StudentEditForm } from "./components/StudentEditForm";
-import { PayRegistrationFeeDialog } from "./components/PayRegistrationFeeDialog";
+export default async function StudentDetailPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-export default function StudentDetailPage() {
-  const params = useParams();
-  const id = typeof params.id === "string" ? params.id : "";
-  const {
-    student,
-    isLoading,
-    isMutating,
-    error,
-    fetchStudent,
-    payRegistrationFee,
-    clearError,
-  } = useStudents();
-  const [isEditing, setIsEditing] = useState(false);
-
-  useEffect(() => {
-    if (id) {
-      fetchStudent(id);
-    }
-  }, [id, fetchStudent]);
-
-  const isLocked = student?.feePaid === true;
-
-  function handleEditSuccess() {
-    setIsEditing(false);
-    void fetchStudent(id);
-  }
-
-  function handleCancelEdit() {
-    setIsEditing(false);
-  }
+  const student = await fetchWithAuth<Student>(endpoints.students.detail(id));
 
   return (
     <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            Student Details
-          </h1>
-          <p className="mt-1 text-base text-slate">
-            View and manage this application.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          {!isEditing && (
-            <Button onClick={() => setIsEditing(true)} disabled={isLocked}>
-              {isLocked ? "Locked" : "Edit"}
-            </Button>
-          )}
-          {student && !isEditing && (
-            <PayRegistrationFeeDialog
-              student={student}
-              isMutating={isMutating}
-              onPay={payRegistrationFee}
-              onPaid={() => void fetchStudent(id)}
-            />
-          )}
-          {student?.status === StudentStatus.REGISTRATION_FEE_PAID &&
-            !student?.slotId && (
-              <Link href={routes.parent.bookSlot(id)}>
-                <Button>Book Exam Slot</Button>
-              </Link>
-            )}
-        </div>
-      </div>
-
-      {isLocked && (
-        <Card className="mb-6 border-warning/20 bg-warning/10 p-4">
-          <p className="text-sm font-medium text-warning">
-            Student details are locked after registration fee is paid.
-          </p>
-        </Card>
-      )}
-
-      {error && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                clearError();
-                void fetchStudent(id);
-              }}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {isLoading && (
-        <Card className="p-12 text-center">
-          <Loading message="Loading student details..." className="min-h-0" />
-        </Card>
-      )}
-
-      {!isLoading && !error && !student && (
-        <Card className="p-12 text-center">
-          <p className="text-slate">Student not found.</p>
-        </Card>
-      )}
-
-      {!isLoading && student && !isEditing && (
-        <StudentDetailCard student={student} />
-      )}
-
-      {!isLoading && student && isEditing && (
-        <StudentEditForm
-          student={student}
-          onSuccess={handleEditSuccess}
-          onCancel={handleCancelEdit}
-        />
-      )}
-
+      <StudentDetailClient student={student} id={id} />
     </div>
   );
 }

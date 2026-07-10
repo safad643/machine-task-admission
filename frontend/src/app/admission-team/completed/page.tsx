@@ -1,12 +1,8 @@
-"use client";
-
-import { useEffect } from "react";
 import Link from "next/link";
-import { useApplications } from "@/hooks/useApplications";
 import { routes } from "@/lib/routes";
-import { Button } from "@/components/ui";
+import { endpoints } from "@/lib/endpoints";
+import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
-import { Loading } from "@/components/ui/Loading";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { StudentStatus, Course } from "@/types";
 import type { Student } from "@/types";
@@ -26,10 +22,7 @@ function formatDate(value: string): string {
   });
 }
 
-function getCompletedApplications(
-  applications: Student[] | null
-): Student[] | null {
-  if (!applications) return null;
+function getCompletedApplications(applications: Student[]): Student[] {
   return applications
     .filter((app) => app.status === StudentStatus.ADMISSION_COMPLETED)
     .sort(
@@ -38,21 +31,13 @@ function getCompletedApplications(
     );
 }
 
-export default function CompletedAdmissionsPage() {
-  const {
-    applications,
-    isLoading,
-    error,
-    fetchApplications,
-    clearError,
-  } = useApplications();
-
-  useEffect(() => {
-    fetchApplications(StudentStatus.ADMISSION_COMPLETED);
-  }, [fetchApplications]);
+export default async function CompletedAdmissionsPage() {
+  const applications = await fetchWithAuth<Student[]>(
+    `${endpoints.admission.applications}?status=ADMISSION_COMPLETED`
+  );
 
   const completedApplications = getCompletedApplications(applications);
-  const completedCount = completedApplications?.length ?? 0;
+  const completedCount = completedApplications.length;
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -73,27 +58,7 @@ export default function CompletedAdmissionsPage() {
         </Link>
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                clearError();
-                fetchApplications(StudentStatus.ADMISSION_COMPLETED);
-              }}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {isLoading && <Loading message="Loading completed admissions..." />}
-
-      {!isLoading && completedApplications !== null && completedCount === 0 && (
+      {completedCount === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
           <h2 className="font-serif text-xl font-semibold text-foreground">
             No completed admissions yet
@@ -113,7 +78,7 @@ export default function CompletedAdmissionsPage() {
         </div>
       )}
 
-      {!isLoading && completedApplications !== null && completedCount > 0 && (
+      {completedCount > 0 && (
         <div className="flex flex-col gap-6">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <Card>
