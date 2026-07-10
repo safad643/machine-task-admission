@@ -72,8 +72,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     if (asChild && isValidElement(children)) {
       const child = children as ReactElement<{
         className?: string;
-        ref?: React.Ref<HTMLElement>;
-        "aria-disabled"?: boolean | "true" | "false";
+        ref?: React.Ref<any>;
       }>;
       return cloneElement(child, {
         ref,

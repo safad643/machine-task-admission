@@ -22,16 +22,6 @@ export const routes = {
   },
 } as const;
 
-export const publicRoutes = new Set([
-  routes.home,
-  routes.login,
-  routes.register,
-  "/public",
-]);
-
-export const parentRoutePrefix = "/parent" as const;
-export const admissionTeamRoutePrefix = "/admission-team" as const;
-
 export function isPublicRoute(pathname: string): boolean {
   return (
     pathname === routes.home ||
@@ -42,11 +32,11 @@ export function isPublicRoute(pathname: string): boolean {
 }
 
 export function isParentRoute(pathname: string): boolean {
-  return pathname.startsWith(parentRoutePrefix);
+  return pathname.startsWith("/parent");
 }
 
 export function isAdmissionTeamRoute(pathname: string): boolean {
-  return pathname.startsWith(admissionTeamRoutePrefix);
+  return pathname.startsWith("/admission-team");
 }
 
 export function getDashboardForRole(role: string | null | undefined): string {

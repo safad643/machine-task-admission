@@ -7,26 +7,16 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
-import { StudentStatus, Course } from "@/types";
+import { Course } from "@/types";
 import type { Student } from "@/types";
 import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
 import { formatDate } from "@/lib/date-utils";
 
-function getCompletedApplications(applications: Student[]): Student[] {
-  return applications
-    .filter((app) => app.status === StudentStatus.ADMISSION_COMPLETED)
-    .sort(
-      (a, b) =>
-        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-    );
-}
-
 export default async function CompletedAdmissionsPage() {
-  const applications = await fetchWithAuth<Student[]>(
-    `${endpoints.admission.applications}?status=ADMISSION_COMPLETED`
+  const completedApplications = await fetchWithAuth<Student[]>(
+    `${endpoints.admission.applications}?status=ADMISSION_COMPLETED&sort=updatedAt:desc`
   );
 
-  const completedApplications = getCompletedApplications(applications);
   const completedCount = completedApplications.length;
 
   return (

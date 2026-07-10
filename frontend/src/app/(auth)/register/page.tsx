@@ -15,12 +15,13 @@ export default function RegisterPage() {
   const { register: registerUser, isLoading, error } = useRegister();
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
-    defaultValues: { name: "", email: "", password: "" },
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
   async function submit(data: RegisterFormData) {
+    const { confirmPassword: _, ...registrationData } = data;
     try {
-      await registerUser(data);
+      await registerUser(registrationData);
       router.push("/login");
     } catch {
       // Error is already captured in useRegister.
@@ -69,6 +70,17 @@ export default function RegisterPage() {
             required
             className="h-12"
             {...register("password")}
+          />
+
+          <Input
+            label="Confirm password"
+            type="password"
+            placeholder="Re-enter your password"
+            error={errors.confirmPassword?.message}
+            autoComplete="new-password"
+            required
+            className="h-12"
+            {...register("confirmPassword")}
           />
 
           <Alert message={error} className="rounded-lg" />

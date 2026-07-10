@@ -23,6 +23,7 @@ export class AdmissionService {
   async findAll(
     status?: StudentStatus,
     limit?: number,
+    sort?: string,
   ): Promise<StudentDocument[]> {
     if (status && !Object.values(StudentStatus).includes(status)) {
       throw new BadRequestException('Invalid status filter');
@@ -33,16 +34,40 @@ export class AdmissionService {
       filter.status = status;
     }
 
+    const sortOption = this.parseSort(sort);
+
     const query = this.studentModel
       .find(filter)
       .populate('slotId')
-      .sort({ createdAt: -1 });
+      .sort(sortOption);
 
     if (limit && limit > 0) {
       query.limit(limit);
     }
 
     return query.exec();
+  }
+
+  private parseSort(sort?: string): Record<string, 1 | -1> {
+    if (!sort) {
+      return { createdAt: -1 };
+    }
+
+    const [field, direction] = sort.split(':');
+    const allowedFields = ['createdAt', 'updatedAt'];
+    const allowedDirections: Record<string, 1 | -1> = {
+      asc: 1,
+      desc: -1,
+    };
+
+    if (
+      !allowedFields.includes(field) ||
+      !(direction in allowedDirections)
+    ) {
+      throw new BadRequestException('Invalid sort parameter');
+    }
+
+    return { [field]: allowedDirections[direction] };
   }
 
   async findOne(id: string): Promise<StudentDocument> {

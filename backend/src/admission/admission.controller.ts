@@ -26,9 +26,10 @@ export class AdmissionController {
   async findAll(
     @Query('status') status?: StudentStatus,
     @Query('limit') limit?: string,
+    @Query('sort') sort?: string,
   ) {
     const parsedLimit = limit ? parseInt(limit, 10) : undefined;
-    return this.admissionService.findAll(status, parsedLimit);
+    return this.admissionService.findAll(status, parsedLimit, sort);
   }
 
   @Get('applications/:id')
