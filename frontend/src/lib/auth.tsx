@@ -1,8 +1,10 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { api } from "./api";
 import { endpoints } from "./endpoints";
+import { routes } from "./routes";
 import type { SafeUser } from "@/types";
 
 interface AuthContextValue {
@@ -25,6 +27,7 @@ interface AuthProviderProps {
 export function AuthProvider({ children }: AuthProviderProps) {
   const [user, setUser] = useState<SafeUser | null>(null);
   const [isSessionLoading, setIsSessionLoading] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
     api
@@ -55,6 +58,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
       // best-effort; clear session regardless
     }
     clearSession();
+    router.push(routes.login);
   }
 
   const value: AuthContextValue = {
