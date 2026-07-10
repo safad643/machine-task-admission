@@ -5,7 +5,7 @@ import { fetchWithAuth } from "@/lib/data";
 import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
-import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { StudentStatus, Course } from "@/types";
 import type { Student } from "@/types";
@@ -114,74 +114,76 @@ export default async function CompletedAdmissionsPage() {
             </Card>
           </div>
 
-          <div className="overflow-hidden rounded-2xl border border-stone bg-background shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse">
-                <thead>
-                  <tr className="border-b border-stone bg-muted">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Grade
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Exam Score
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Assigned Course
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Completed At
-                    </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {completedApplications.map((application) => (
-                    <tr
-                      key={application._id}
-                      className="border-b border-stone last:border-b-0 hover:bg-paper/50"
-                    >
-                      <td className="px-6 py-4 text-sm font-medium text-foreground">
-                        {application.studentName}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate">
-                        {formatGradeLabel(application.applyingGrade)}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-foreground">
-                        {application.examScore ?? "—"}
-                      </td>
-                      <td className="px-6 py-4">
-                        {application.assignedCourse ? (
-                          <Badge variant="success" size="sm">
-                            {courseLabelMap[application.assignedCourse]}
-                          </Badge>
-                        ) : (
-                          <span className="text-sm text-slate">—</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate">
-                        {formatDate(application.updatedAt)}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Link
-                          href={routes.admissionTeam.applicationDetail(
-                            application._id
-                          )}
-                          className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
-                        >
-                          View
-                        </Link>
-                      </td>
+          <Card>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-stone bg-muted">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Grade
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Exam Score
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Assigned Course
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Completed At
+                      </th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
+                  </thead>
+                  <tbody>
+                    {completedApplications.map((application) => (
+                      <tr
+                        key={application._id}
+                        className="border-b border-stone last:border-b-0 hover:bg-paper/50"
+                      >
+                        <td className="px-6 py-4 text-sm font-medium text-foreground">
+                          {application.studentName}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate">
+                          {formatGradeLabel(application.applyingGrade)}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-foreground">
+                          {application.examScore ?? "—"}
+                        </td>
+                        <td className="px-6 py-4">
+                          {application.assignedCourse ? (
+                            <Badge variant="success" size="sm">
+                              {courseLabelMap[application.assignedCourse]}
+                            </Badge>
+                          ) : (
+                            <span className="text-sm text-slate">—</span>
+                          )}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate">
+                          {formatDate(application.updatedAt)}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <Link
+                            href={routes.admissionTeam.applicationDetail(
+                              application._id
+                            )}
+                            className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
+                          >
+                            View
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       )}
     </PageShell>

@@ -41,7 +41,7 @@ export function RecentTable({
         <CardDescription>{description}</CardDescription>
       </CardHeader>
       <CardContent>
-        <div className="overflow-hidden rounded-xl border border-stone">
+        <div className="overflow-x-auto">
           <table className="min-w-full border-collapse">
             <thead>
               <tr className="border-b border-stone bg-muted">

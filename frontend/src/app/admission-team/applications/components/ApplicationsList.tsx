@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Select } from "@/components/ui/Select";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Card, CardContent } from "@/components/ui/Card";
 import { StudentStatus } from "@/types";
 import type { Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
@@ -78,67 +79,69 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
       )}
 
       {filteredApplications.length > 0 && (
-        <div className="overflow-hidden rounded-2xl border border-stone bg-background shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-collapse">
-              <thead>
-                <tr className="border-b border-stone bg-muted">
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                    Name
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                    Grade
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                    Status
-                  </th>
-                  <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                    Created At
-                  </th>
-                  <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                    Actions
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredApplications.map((application) => (
-                  <tr
-                    key={application._id}
-                    className="border-b border-stone last:border-b-0 hover:bg-paper/50"
-                  >
-                    <td className="px-6 py-4 text-sm font-medium text-foreground">
-                      {application.studentName}
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate">
-                      {formatGradeLabel(application.applyingGrade)}
-                    </td>
-                    <td className="px-6 py-4">
-                      <Badge
-                        variant={statusVariantMap[application.status]}
-                        size="sm"
-                      >
-                        {statusLabelMap[application.status]}
-                      </Badge>
-                    </td>
-                    <td className="px-6 py-4 text-sm text-slate">
-                      {formatDate(application.createdAt)}
-                    </td>
-                    <td className="px-6 py-4 text-right">
-                      <Link
-                        href={routes.admissionTeam.applicationDetail(
-                          application._id
-                        )}
-                        className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
-                      >
-                        View
-                      </Link>
-                    </td>
+        <Card>
+          <CardContent>
+            <div className="overflow-x-auto">
+              <table className="min-w-full border-collapse">
+                <thead>
+                  <tr className="border-b border-stone bg-muted">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      Name
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      Grade
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      Status
+                    </th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                      Created At
+                    </th>
+                    <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                      Actions
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+                </thead>
+                <tbody>
+                  {filteredApplications.map((application) => (
+                    <tr
+                      key={application._id}
+                      className="border-b border-stone last:border-b-0 hover:bg-paper/50"
+                    >
+                      <td className="px-6 py-4 text-sm font-medium text-foreground">
+                        {application.studentName}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate">
+                        {formatGradeLabel(application.applyingGrade)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge
+                          variant={statusVariantMap[application.status]}
+                          size="sm"
+                        >
+                          {statusLabelMap[application.status]}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-sm text-slate">
+                        {formatDate(application.createdAt)}
+                      </td>
+                      <td className="px-6 py-4 text-right">
+                        <Link
+                          href={routes.admissionTeam.applicationDetail(
+                            application._id
+                          )}
+                          className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
+                        >
+                          View
+                        </Link>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </CardContent>
+        </Card>
       )}
     </PageShell>
   );
