@@ -1,5 +1,6 @@
 "use client";
 
+import { useMemo } from "react";
 import { Alert, Button, Input, Select } from "@/components/ui";
 import { useStudentEditForm, mapStudentToFormData } from "@/hooks";
 import { Gender, Grade, type Student } from "@/types";
@@ -16,6 +17,8 @@ export function StudentEditForm({
   onSuccess,
   onCancel,
 }: StudentEditFormProps) {
+  const initialData = useMemo(() => mapStudentToFormData(student), [student]);
+
   const {
     fields,
     onSubmit,
@@ -25,7 +28,7 @@ export function StudentEditForm({
     clearError,
   } = useStudentEditForm({
     studentId: student._id,
-    initialData: mapStudentToFormData(student),
+    initialData,
     onSuccess,
   });
 
