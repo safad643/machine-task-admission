@@ -19,7 +19,7 @@ export default async function AdmissionTeamDashboardPage() {
   const statusCounts = getStatusCounts(applications);
 
   return (
-    <DashboardShell
+    <PageShell
       title="Admission Team Dashboard"
       description="Overview of all admission applications and their progress."
       actions={
@@ -58,6 +58,6 @@ export default async function AdmissionTeamDashboardPage() {
           </div>
         </div>
       )}
-    </DashboardShell>
+    </PageShell>
   );
 }

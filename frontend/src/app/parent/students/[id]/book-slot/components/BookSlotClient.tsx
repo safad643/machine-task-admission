@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { useExamSlots } from "@/hooks";
 import { routes } from "@/lib/routes";
+import { PageShell } from "@/components/PageShell";
 import { StudentStatus } from "@/types";
 import {
   Card,
@@ -49,25 +49,15 @@ export function BookSlotClient({ student, slots, id }: BookSlotClientProps) {
   }
 
   return (
-    <div className="mx-auto max-w-4xl">
-      <div className="mb-6 flex items-center gap-4">
-        <Link
-          href={routes.parent.studentDetail(id)}
-          className="text-sm font-medium text-slate underline decoration-slate/30 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
-        >
-          &larr; Back to student details
-        </Link>
-      </div>
-
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-          Book Exam Slot
-        </h1>
-        <p className="mt-1 text-base text-slate">
-          Choose an available exam slot for this student.
-        </p>
-      </div>
-
+    <PageShell
+      title="Book Exam Slot"
+      description="Choose an available exam slot for this student."
+      maxWidth="large"
+      backLink={{
+        href: routes.parent.studentDetail(id),
+        label: "Back to student details",
+      }}
+    >
       {slots.length === 0 && (
         <Card className="p-12 text-center">
           <h2 className="font-serif text-xl font-semibold text-foreground">
@@ -162,6 +152,6 @@ export function BookSlotClient({ student, slots, id }: BookSlotClientProps) {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

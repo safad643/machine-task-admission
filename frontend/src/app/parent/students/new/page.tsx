@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useStudents } from "@/hooks/useStudents";
 import { routes } from "@/lib/routes";
 import { createStudentSchema, type CreateStudentFormData } from "@/lib/schemas";
+import { PageShell } from "@/components/PageShell";
 import { Button, Input, Select } from "@/components/ui";
 import { Gender, Grade } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
@@ -40,16 +41,11 @@ export default function NewStudentPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-          Add Student
-        </h1>
-        <p className="mt-1 text-base text-slate">
-          Enter your child&apos;s details to start their application.
-        </p>
-      </div>
-
+    <PageShell
+      title="Add Student"
+      description="Enter your child&apos;s details to start their application."
+      maxWidth="small"
+    >
       <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
         <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
           <Input
@@ -130,6 +126,6 @@ export default function NewStudentPage() {
           </div>
         </form>
       </div>
-    </div>
+    </PageShell>
   );
 }

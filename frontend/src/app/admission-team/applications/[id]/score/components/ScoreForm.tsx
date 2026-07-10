@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useApplications } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { scoreSchema, type ScoreFormData } from "@/lib/schemas";
+import { PageShell } from "@/components/PageShell";
 import { StudentStatus, type Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
 import { Button, Input } from "@/components/ui";
@@ -51,25 +52,15 @@ export default function ScoreForm({ application, id }: ScoreFormProps) {
   }, [application, id, router]);
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex items-center gap-4">
-        <Link
-          href={routes.admissionTeam.applicationDetail(id)}
-          className="text-sm font-medium text-slate underline decoration-slate/30 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
-        >
-          &larr; Back to application details
-        </Link>
-      </div>
-
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-          Enter Exam Score
-        </h1>
-        <p className="mt-1 text-base text-slate">
-          Record the student&apos;s exam marks. Score must be between 0 and 100.
-        </p>
-      </div>
-
+    <PageShell
+      title="Enter Exam Score"
+      description="Record the student&apos;s exam marks. Score must be between 0 and 100."
+      maxWidth="small"
+      backLink={{
+        href: routes.admissionTeam.applicationDetail(id),
+        label: "Back to application details",
+      }}
+    >
       {formError && (
         <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -132,6 +123,6 @@ export default function ScoreForm({ application, id }: ScoreFormProps) {
           </form>
         </CardContent>
       </Card>
-    </div>
+    </PageShell>
   );
 }

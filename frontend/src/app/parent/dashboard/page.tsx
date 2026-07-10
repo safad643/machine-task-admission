@@ -2,7 +2,7 @@ import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { PageShell } from "@/components/PageShell";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { RecentTable } from "@/components/dashboard/RecentTable";
 import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
@@ -19,7 +19,7 @@ export default async function ParentDashboardPage() {
   const statusCounts = students ? getStatusCounts(students) : null;
 
   return (
-    <DashboardShell
+    <PageShell
       title="Parent Dashboard"
       description="Overview of your admission applications."
       actions={
@@ -60,6 +60,6 @@ export default async function ParentDashboardPage() {
           </div>
         </div>
       )}
-    </DashboardShell>
+    </PageShell>
   );
 }

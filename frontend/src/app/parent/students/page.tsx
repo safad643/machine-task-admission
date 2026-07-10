@@ -2,6 +2,7 @@ import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
+import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui";
@@ -17,23 +18,17 @@ export default async function StudentsPage() {
   const students = await fetchWithAuth<Student[]>(endpoints.students.list);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            My Students
-          </h1>
-          <p className="mt-1 text-base text-slate">
-            Manage your children&apos;s admission applications.
-          </p>
-        </div>
-        {students.length > 0 && (
+    <PageShell
+      title="My Students"
+      description="Manage your children&apos;s admission applications."
+      actions={
+        students.length > 0 && (
           <Button asChild variant="primary" size="md">
             <Link href={routes.parent.newStudent}>Add Student</Link>
           </Button>
-        )}
-      </div>
-
+        )
+      }
+    >
       {students.length === 0 && (
         <EmptyState
           title="No students yet"
@@ -104,6 +99,6 @@ export default async function StudentsPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

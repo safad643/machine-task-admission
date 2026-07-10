@@ -12,9 +12,5 @@ export default async function StudentDetailPage({
 
   const student = await fetchWithAuth<Student>(endpoints.students.detail(id));
 
-  return (
-    <div className="mx-auto max-w-6xl">
-      <StudentDetailClient student={student} id={id} />
-    </div>
-  );
+  return <StudentDetailClient student={student} id={id} />;
 }

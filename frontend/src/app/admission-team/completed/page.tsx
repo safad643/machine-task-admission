@@ -2,6 +2,7 @@ import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
+import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -29,21 +30,15 @@ export default async function CompletedAdmissionsPage() {
   const completedCount = completedApplications.length;
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            Completed Admissions
-          </h1>
-          <p className="mt-1 text-base text-slate">
-            View all finalized admissions with scores and assigned courses.
-          </p>
-        </div>
+    <PageShell
+      title="Completed Admissions"
+      description="View all finalized admissions with scores and assigned courses."
+      actions={
         <Button asChild variant="outline" size="md">
           <Link href={routes.admissionTeam.applications}>Back to Applications</Link>
         </Button>
-      </div>
-
+      }
+    >
       {completedCount === 0 && (
         <EmptyState
           title="No completed admissions yet"
@@ -189,6 +184,6 @@ export default async function CompletedAdmissionsPage() {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }

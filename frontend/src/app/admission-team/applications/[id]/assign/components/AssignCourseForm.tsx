@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useApplications } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { courseSchema, type CourseFormData } from "@/lib/schemas";
+import { PageShell } from "@/components/PageShell";
 import { StudentStatus, Course, type Student } from "@/types";
 import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
 import { Button, Select } from "@/components/ui";
@@ -61,25 +62,15 @@ export default function AssignCourseForm({
   }, [application, id, router]);
 
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="mb-6 flex items-center gap-4">
-        <Link
-          href={routes.admissionTeam.applicationDetail(id)}
-          className="text-sm font-medium text-slate underline decoration-slate/30 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
-        >
-          &larr; Back to application details
-        </Link>
-      </div>
-
-      <div className="mb-8">
-        <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-          Assign Course
-        </h1>
-        <p className="mt-1 text-base text-slate">
-          Select a course for the student to complete the admission process.
-        </p>
-      </div>
-
+    <PageShell
+      title="Assign Course"
+      description="Select a course for the student to complete the admission process."
+      maxWidth="small"
+      backLink={{
+        href: routes.admissionTeam.applicationDetail(id),
+        label: "Back to application details",
+      }}
+    >
       {formError && (
         <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -143,6 +134,6 @@ export default function AssignCourseForm({
           </form>
         </CardContent>
       </Card>
-    </div>
+    </PageShell>
   );
 }

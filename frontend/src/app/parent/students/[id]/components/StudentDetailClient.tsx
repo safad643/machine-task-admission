@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useStudents } from "@/hooks";
 import { routes } from "@/lib/routes";
+import { PageShell } from "@/components/PageShell";
 import { Button } from "@/components/ui";
 import { Card } from "@/components/ui/Card";
 import { Student, StudentStatus } from "@/types";
@@ -39,17 +40,11 @@ export function StudentDetailClient({ student, id }: StudentDetailClientProps) {
   }
 
   return (
-    <>
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            Student Details
-          </h1>
-          <p className="mt-1 text-base text-slate">
-            View and manage this application.
-          </p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
+    <PageShell
+      title="Student Details"
+      description="View and manage this application."
+      actions={
+        <>
           {!isEditing && (
             <Button onClick={() => setIsEditing(true)} disabled={isLocked}>
               {isLocked ? "Locked" : "Edit"}
@@ -69,9 +64,9 @@ export function StudentDetailClient({ student, id }: StudentDetailClientProps) {
                 <Link href={routes.parent.bookSlot(id)}>Book Exam Slot</Link>
               </Button>
             )}
-        </div>
-      </div>
-
+        </>
+      }
+    >
       {isLocked && (
         <Card className="mb-6 border-warning/20 bg-warning/10 p-4">
           <p className="text-sm font-medium text-warning">
@@ -100,6 +95,6 @@ export function StudentDetailClient({ student, id }: StudentDetailClientProps) {
           onCancel={handleCancelEdit}
         />
       )}
-    </>
+    </PageShell>
   );
 }

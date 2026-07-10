@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
+import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Select } from "@/components/ui/Select";
@@ -38,21 +39,15 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
       : applications.filter((application) => application.status === statusFilter);
 
   return (
-    <div className="mx-auto max-w-6xl">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
-            Student Applications
-          </h1>
-          <p className="mt-1 text-base text-slate">
-            Review and manage all admission applications.
-          </p>
-        </div>
+    <PageShell
+      title="Student Applications"
+      description="Review and manage all admission applications."
+      actions={
         <Button asChild variant="primary" size="md">
           <Link href={routes.admissionTeam.slots}>Manage Slots</Link>
         </Button>
-      </div>
-
+      }
+    >
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end">
         <div className="w-full sm:w-72">
           <Select
@@ -145,6 +140,6 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
           </div>
         </div>
       )}
-    </div>
+    </PageShell>
   );
 }
