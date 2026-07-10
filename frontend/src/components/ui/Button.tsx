@@ -5,8 +5,10 @@ import {
   forwardRef,
   isValidElement,
   type ButtonHTMLAttributes,
+  type HTMLAttributes,
   type ReactElement,
   type ReactNode,
+  type Ref,
 } from "react";
 import { Loader } from "./Loader";
 import { cn } from "@/lib/utils";
@@ -70,10 +72,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     );
 
     if (asChild && isValidElement(children)) {
-      const child = children as ReactElement<{
-        className?: string;
-        ref?: React.Ref<any>;
-      }>;
+      const child = children as ReactElement<
+        HTMLAttributes<HTMLElement> & { ref?: Ref<any> }
+      >;
       return cloneElement(child, {
         ref,
         className: cn(buttonClasses, child.props.className),
