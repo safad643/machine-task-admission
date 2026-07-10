@@ -21,6 +21,21 @@ export enum Course {
   ARTS = 'ARTS',
 }
 
+export enum Grade {
+  GRADE_1 = 'GRADE_1',
+  GRADE_2 = 'GRADE_2',
+  GRADE_3 = 'GRADE_3',
+  GRADE_4 = 'GRADE_4',
+  GRADE_5 = 'GRADE_5',
+  GRADE_6 = 'GRADE_6',
+  GRADE_7 = 'GRADE_7',
+  GRADE_8 = 'GRADE_8',
+  GRADE_9 = 'GRADE_9',
+  GRADE_10 = 'GRADE_10',
+  GRADE_11 = 'GRADE_11',
+  GRADE_12 = 'GRADE_12',
+}
+
 export type StudentDocument = HydratedDocument<Student>;
 
 @Schema({
@@ -45,8 +60,11 @@ export class Student {
   @Prop({ required: true, trim: true })
   previousSchool: string;
 
-  @Prop({ required: true, trim: true })
-  applyingGrade: string;
+  @Prop({
+    required: true,
+    enum: Grade,
+  })
+  applyingGrade: Grade;
 
   @Prop({
     required: true,

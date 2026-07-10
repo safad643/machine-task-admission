@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useStudentForm } from "@/hooks/useStudentForm";
 import { routes } from "@/lib/routes";
 import { Button, Input, Select } from "@/components/ui";
-import { Gender } from "@/types";
+import { Gender, Grade } from "@/types";
+import { formatGradeLabel } from "@/lib/utils";
 
 export default function NewStudentPage() {
   const { form, submit, isMutating, error, clearError } = useStudentForm();
@@ -61,13 +62,21 @@ export default function NewStudentPage() {
             {...register("previousSchool")}
           />
 
-          <Input
+          <Select
             label="Applying Grade"
-            placeholder="e.g. Grade 5"
             error={errors.applyingGrade?.message}
             required
             {...register("applyingGrade")}
-          />
+          >
+            <option value="" disabled>
+              Select a grade
+            </option>
+            {Object.values(Grade).map((grade) => (
+              <option key={grade} value={grade}>
+                {formatGradeLabel(grade)}
+              </option>
+            ))}
+          </Select>
 
           {error && (
             <div className="rounded-lg border border-danger/20 bg-danger/10 p-3.5">

@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { Gender, Course } from "@/types";
+import { Gender, Course, Grade } from "@/types";
 
 export const loginSchema = z.object({
   email: z
@@ -23,7 +23,11 @@ export const registerSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters")
-    .max(128, "Password must be under 128 characters"),
+    .max(128, "Password must be under 128 characters")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)"
+    ),
 });
 
 export const createStudentSchema = z.object({
@@ -40,7 +44,9 @@ export const createStudentSchema = z.object({
     }),
   gender: z.nativeEnum(Gender),
   previousSchool: z.string().min(1, "Previous school is required"),
-  applyingGrade: z.string().min(1, "Applying grade is required"),
+  applyingGrade: z.nativeEnum(Grade, {
+    message: "Please select a grade",
+  }),
 });
 
 export const updateStudentSchema = createStudentSchema.partial();

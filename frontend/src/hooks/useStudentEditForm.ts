@@ -8,7 +8,7 @@ import {
   updateStudentSchema,
   type UpdateStudentFormData,
 } from "@/lib/schemas";
-import { Gender } from "@/types";
+import { Gender, Grade } from "@/types";
 
 interface UseStudentEditFormOptions {
   studentId: string;
@@ -56,7 +56,7 @@ export function mapStudentToFormData(student: {
   dateOfBirth: string;
   gender: Gender;
   previousSchool: string;
-  applyingGrade: string;
+  applyingGrade: Grade;
 }): UpdateStudentFormData {
   return {
     studentName: student.studentName,

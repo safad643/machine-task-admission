@@ -9,7 +9,7 @@ import {
   createStudentSchema,
   type CreateStudentFormData,
 } from "@/lib/schemas";
-import { Gender } from "@/types";
+import { Gender, Grade } from "@/types";
 
 export function useStudentForm() {
   const router = useRouter();
@@ -22,7 +22,7 @@ export function useStudentForm() {
       dateOfBirth: "",
       gender: Gender.MALE,
       previousSchool: "",
-      applyingGrade: "",
+      applyingGrade: "" as unknown as Grade,
     },
   });
 

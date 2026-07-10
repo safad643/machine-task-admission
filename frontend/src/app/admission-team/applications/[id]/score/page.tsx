@@ -7,7 +7,8 @@ import { useApplications } from "@/hooks/useApplications";
 import { useScoreForm } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { StudentStatus } from "@/types";
-import { Button, Input } from "@/components/ui";
+import { formatGradeLabel } from "@/lib/utils";
+import { Button, Input, Loading } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -104,7 +105,7 @@ export default function ApplicationScorePage() {
 
       {isLoading && (
         <Card className="p-12 text-center">
-          <p className="text-slate">Loading application details...</p>
+          <Loading message="Loading application details..." className="min-h-0" />
         </Card>
       )}
 
@@ -121,7 +122,7 @@ export default function ApplicationScorePage() {
               {application.studentName}
             </CardTitle>
             <CardDescription>
-              Applying grade {application.applyingGrade} • Application ID: {application._id}
+              Applying grade {formatGradeLabel(application.applyingGrade)} • Application ID: {application._id}
             </CardDescription>
           </CardHeader>
           <CardContent>

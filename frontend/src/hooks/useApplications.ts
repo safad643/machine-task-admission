@@ -11,7 +11,7 @@ interface UseApplicationsReturn {
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
-  fetchApplications: (status?: StudentStatus) => Promise<void>;
+  fetchApplications: (status?: StudentStatus, limit?: number) => Promise<void>;
   fetchApplication: (id: string) => Promise<void>;
   assignScore: (id: string, examScore: number) => Promise<Student>;
   assignCourse: (id: string, assignedCourse: Course) => Promise<Student>;
@@ -25,13 +25,17 @@ export function useApplications(): UseApplicationsReturn {
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchApplications = useCallback(async (status?: StudentStatus) => {
+  const fetchApplications = useCallback(async (status?: StudentStatus, limit?: number) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const url = status
-        ? `${endpoints.admission.applications}?status=${encodeURIComponent(status)}`
+      const params = new URLSearchParams();
+      if (status) params.set("status", status);
+      if (limit && limit > 0) params.set("limit", String(limit));
+      const qs = params.toString();
+      const url = qs
+        ? `${endpoints.admission.applications}?${qs}`
         : endpoints.admission.applications;
       const { data } = await api.get<Student[]>(url);
       setApplications(data);

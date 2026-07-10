@@ -1,6 +1,8 @@
 "use client";
 
 import { type ReactNode, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/auth";
 import { Button } from "./Button";
@@ -25,6 +27,7 @@ export function Layout({
 }: LayoutProps) {
   const { user, logout } = useAuth();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   return (
     <div className="flex min-h-screen bg-background">
@@ -40,21 +43,24 @@ export function Layout({
         </div>
 
         <nav className="flex flex-1 flex-col gap-1 p-4">
-          {navItems.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                item.active
-                  ? "bg-foreground text-background"
-                  : "text-slate hover:bg-background hover:text-foreground"
-              )}
-            >
-              {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
-              {item.label}
-            </a>
-          ))}
+          {navItems.map((item) => {
+            const isActive = item.active ?? pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-foreground text-background"
+                    : "text-slate hover:bg-background hover:text-foreground"
+                )}
+              >
+                {item.icon && <span className="flex-shrink-0">{item.icon}</span>}
+                {item.label}
+              </Link>
+            );
+          })}
         </nav>
 
         {user && (
@@ -66,7 +72,7 @@ export function Layout({
                 variant="ghost"
                 size="sm"
                 fullWidth
-                className="mt-2 justify-start"
+                className="mt-2 justify-start !bg-danger/10 !text-danger hover:!bg-danger/20 hover:!text-danger-text"
                 onClick={() => logout()}
               >
                 Sign out
@@ -121,35 +127,22 @@ export function Layout({
             </h1>
           )}
 
-          {user && (
-            <div className="flex items-center gap-3">
-              <div className="hidden text-right lg:block">
-                <p className="text-sm font-medium text-foreground">{user.name}</p>
-                <p className="text-xs text-slate">{user.role}</p>
-              </div>
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-foreground text-sm font-semibold text-background">
-                {user.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")
-                  .slice(0, 2)
-                  .toUpperCase()}
-              </div>
-            </div>
-          )}
+
         </header>
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
           <div className="border-b border-border bg-paper px-4 py-3 lg:hidden">
             <nav className="flex flex-col gap-1">
-              {navItems.map((item) => (
-                <a
+              {navItems.map((item) => {
+                const isActive = item.active ?? pathname === item.href;
+                return (
+                <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
                     "flex items-center gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition-colors",
-                    item.active
+                    isActive
                       ? "bg-foreground text-background"
                       : "text-slate hover:bg-background hover:text-foreground"
                   )}
@@ -159,15 +152,16 @@ export function Layout({
                     <span className="flex-shrink-0">{item.icon}</span>
                   )}
                   {item.label}
-                </a>
-              ))}
+                </Link>
+                );
+              })}
             </nav>
             {user && (
               <Button
                 variant="ghost"
                 size="sm"
                 fullWidth
-                className="mt-3 justify-start"
+                className="mt-3 justify-start !bg-danger/10 !text-danger hover:!bg-danger/20 hover:!text-danger-text"
                 onClick={() => logout()}
               >
                 Sign out

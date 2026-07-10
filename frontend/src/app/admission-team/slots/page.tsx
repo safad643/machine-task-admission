@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useExamSlots, useSlotForm } from "@/hooks";
-import { Button, Input, Badge, Confirmation } from "@/components/ui";
+import { Button, Input, Badge, Confirmation, Loading } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -163,9 +163,7 @@ export default function ExamSlotsPage() {
             </CardHeader>
             <CardContent>
               {isLoading && (
-                <div className="py-12 text-center">
-                  <p className="text-slate">Loading slots...</p>
-                </div>
+                <Loading message="Loading slots..." className="min-h-0 py-12" />
               )}
 
               {!isLoading && slots !== null && slots.length === 0 && (

@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
@@ -31,8 +32,12 @@ export class StudentsController {
   }
 
   @Get()
-  async findAll(@CurrentUser('_id') parentId: string) {
-    return this.studentsService.findAllByParent(parentId);
+  async findAll(
+    @CurrentUser('_id') parentId: string,
+    @Query('limit') limit?: string,
+  ) {
+    const parsedLimit = limit ? parseInt(limit, 10) : undefined;
+    return this.studentsService.findAllByParent(parentId, parsedLimit);
   }
 
   @Get(':id')

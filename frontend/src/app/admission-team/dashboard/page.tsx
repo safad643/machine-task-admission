@@ -13,9 +13,11 @@ import {
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loading } from "@/components/ui/Loading";
 import { StudentStatus } from "@/types";
 import type { Student } from "@/types";
 import type { BadgeProps } from "@/components/ui/Badge";
+import { formatGradeLabel } from "@/lib/utils";
 
 const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
   [StudentStatus.APPLICATION_CREATED]: "warning",
@@ -66,17 +68,12 @@ export default function AdmissionTeamDashboardPage() {
     useApplications();
 
   useEffect(() => {
-    fetchApplications();
+    fetchApplications(undefined, 5);
   }, [fetchApplications]);
 
   const totalApplications = applications?.length ?? 0;
   const statusCounts = applications ? getStatusCounts(applications) : null;
-  const recentApplications = applications
-    ? [...applications].sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      ).slice(0, 5)
-    : [];
+  const recentApplications = applications ?? [];
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -123,11 +120,7 @@ export default function AdmissionTeamDashboardPage() {
         </div>
       )}
 
-      {isLoading && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center">
-          <p className="text-slate">Loading dashboard...</p>
-        </div>
-      )}
+      {isLoading && <Loading message="Loading dashboard..." />}
 
       {!isLoading && applications !== null && applications.length === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
@@ -219,7 +212,7 @@ export default function AdmissionTeamDashboardPage() {
                             {application.studentName}
                           </td>
                           <td className="px-4 py-3 text-sm text-slate">
-                            {application.applyingGrade}
+                            {formatGradeLabel(application.applyingGrade)}
                           </td>
                           <td className="px-4 py-3">
                             <Badge

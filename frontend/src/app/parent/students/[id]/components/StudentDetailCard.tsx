@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import type { Student } from "@/types";
+import { formatGradeLabel } from "@/lib/utils";
 import {
   statusVariantMap,
   formatStatusLabel,
@@ -64,7 +65,7 @@ export function StudentDetailCard({ student }: StudentDetailCardProps) {
           <div>
             <dt className="text-sm font-medium text-slate">Applying Grade</dt>
             <dd className="mt-1 text-base text-foreground">
-              {student.applyingGrade}
+              {formatGradeLabel(student.applyingGrade)}
             </dd>
           </div>
           <div>

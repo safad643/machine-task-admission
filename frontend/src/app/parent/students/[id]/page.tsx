@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useStudents } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { Card } from "@/components/ui/Card";
-import { Button } from "@/components/ui";
+import { Button, Loading } from "@/components/ui";
 import { StudentStatus } from "@/types";
 import { StudentDetailCard } from "./components/StudentDetailCard";
 import { StudentEditForm } from "./components/StudentEditForm";
@@ -44,16 +44,7 @@ export default function StudentDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="mb-6 flex items-center gap-4">
-        <Link
-          href={routes.parent.students}
-          className="text-sm font-medium text-slate underline decoration-slate/30 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground"
-        >
-          &larr; Back to students
-        </Link>
-      </div>
-
+    <div className="mx-auto max-w-6xl">
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-3xl font-semibold tracking-tight text-foreground">
@@ -69,7 +60,7 @@ export default function StudentDetailPage() {
               {isLocked ? "Locked" : "Edit"}
             </Button>
           )}
-          {student && (
+          {student && !isEditing && (
             <PayRegistrationFeeDialog
               student={student}
               isMutating={isMutating}
@@ -114,7 +105,7 @@ export default function StudentDetailPage() {
 
       {isLoading && (
         <Card className="p-12 text-center">
-          <p className="text-slate">Loading student details...</p>
+          <Loading message="Loading student details..." className="min-h-0" />
         </Card>
       )}
 

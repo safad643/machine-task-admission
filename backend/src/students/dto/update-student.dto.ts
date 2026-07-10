@@ -1,5 +1,5 @@
 import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
-import { Gender } from '../students.schema.js';
+import { Gender, Grade } from '../students.schema.js';
 
 export class UpdateStudentDto {
   @IsOptional()
@@ -22,6 +22,6 @@ export class UpdateStudentDto {
   previousSchool?: string;
 
   @IsOptional()
-  @IsString({ message: 'Applying grade must be a string' })
-  applyingGrade?: string;
+  @IsEnum(Grade, { message: 'Applying grade must be a valid grade' })
+  applyingGrade?: Grade;
 }

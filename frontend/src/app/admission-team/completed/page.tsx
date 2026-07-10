@@ -6,9 +6,11 @@ import { useApplications } from "@/hooks/useApplications";
 import { routes } from "@/lib/routes";
 import { Button } from "@/components/ui";
 import { Badge } from "@/components/ui/Badge";
+import { Loading } from "@/components/ui/Loading";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { StudentStatus, Course } from "@/types";
 import type { Student } from "@/types";
+import { formatGradeLabel } from "@/lib/utils";
 
 const courseLabelMap: Record<Course, string> = {
   [Course.SCIENCE]: "Science",
@@ -89,11 +91,7 @@ export default function CompletedAdmissionsPage() {
         </div>
       )}
 
-      {isLoading && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center">
-          <p className="text-slate">Loading completed admissions...</p>
-        </div>
-      )}
+      {isLoading && <Loading message="Loading completed admissions..." />}
 
       {!isLoading && completedApplications !== null && completedCount === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
@@ -210,7 +208,7 @@ export default function CompletedAdmissionsPage() {
                         {application.studentName}
                       </td>
                       <td className="px-6 py-4 text-sm text-slate">
-                        {application.applyingGrade}
+                        {formatGradeLabel(application.applyingGrade)}
                       </td>
                       <td className="px-6 py-4 text-sm text-foreground">
                         {application.examScore ?? "—"}

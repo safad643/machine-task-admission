@@ -7,8 +7,10 @@ import { routes } from "@/lib/routes";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { Select } from "@/components/ui/Select";
+import { Loading } from "@/components/ui/Loading";
 import { StudentStatus } from "@/types";
 import type { BadgeProps } from "@/components/ui/Badge";
+import { formatGradeLabel } from "@/lib/utils";
 
 const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
   [StudentStatus.APPLICATION_CREATED]: "warning",
@@ -121,11 +123,7 @@ export default function ApplicationsPage() {
         </div>
       )}
 
-      {isLoading && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center">
-          <p className="text-slate">Loading applications...</p>
-        </div>
-      )}
+      {isLoading && <Loading message="Loading applications..." />}
 
       {!isLoading && applications !== null && applications.length === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
@@ -173,7 +171,7 @@ export default function ApplicationsPage() {
                       {application.studentName}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate">
-                      {application.applyingGrade}
+                      {formatGradeLabel(application.applyingGrade)}
                     </td>
                     <td className="px-6 py-4">
                       <Badge

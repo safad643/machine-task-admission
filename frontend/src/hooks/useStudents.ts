@@ -11,7 +11,7 @@ interface UseStudentsReturn {
   isLoading: boolean;
   isMutating: boolean;
   error: string | null;
-  fetchStudents: () => Promise<void>;
+  fetchStudents: (limit?: number) => Promise<void>;
   fetchStudent: (id: string) => Promise<void>;
   createStudent: (dto: CreateStudentDto) => Promise<Student>;
   updateStudent: (id: string, dto: UpdateStudentDto) => Promise<Student>;
@@ -26,12 +26,15 @@ export function useStudents(): UseStudentsReturn {
   const [isMutating, setIsMutating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchStudents = useCallback(async () => {
+  const fetchStudents = useCallback(async (limit?: number) => {
     setIsLoading(true);
     setError(null);
 
     try {
-      const { data } = await api.get<Student[]>(endpoints.students.list);
+      const url = limit && limit > 0
+        ? `${endpoints.students.list}?limit=${limit}`
+        : endpoints.students.list;
+      const { data } = await api.get<Student[]>(url);
       setStudents(data);
     } catch (err) {
       const apiError = err as ApiError;

@@ -9,7 +9,7 @@ import { envValidationSchema } from './env.validation.js';
       validationSchema: envValidationSchema,
       validationOptions: {
         abortEarly: true,
-        allowUnknown: false,
+        allowUnknown: true,
       },
     }),
   ],

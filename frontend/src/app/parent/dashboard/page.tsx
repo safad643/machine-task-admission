@@ -7,9 +7,11 @@ import { routes } from "@/lib/routes";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
+import { Loading } from "@/components/ui/Loading";
 import { StudentStatus } from "@/types";
 import type { Student } from "@/types";
 import type { BadgeProps } from "@/components/ui/Badge";
+import { formatGradeLabel } from "@/lib/utils";
 
 const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
   [StudentStatus.APPLICATION_CREATED]: "warning",
@@ -59,14 +61,12 @@ export default function ParentDashboardPage() {
   const { students, isLoading, error, fetchStudents, clearError } = useStudents();
 
   useEffect(() => {
-    fetchStudents();
+    fetchStudents(5);
   }, [fetchStudents]);
 
   const totalStudents = students?.length ?? 0;
   const statusCounts = students ? getStatusCounts(students) : null;
-  const recentStudents = students ? [...students].sort(
-    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  ).slice(0, 5) : [];
+  const recentStudents = students ?? [];
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -79,12 +79,14 @@ export default function ParentDashboardPage() {
             Overview of your admission applications.
           </p>
         </div>
-        <Link
-          href={routes.parent.newStudent}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Add Student
-        </Link>
+        {!isLoading && students !== null && students.length > 0 && (
+          <Link
+            href={routes.parent.newStudent}
+            className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Add Student
+          </Link>
+        )}
       </div>
 
       {error && (
@@ -105,11 +107,7 @@ export default function ParentDashboardPage() {
         </div>
       )}
 
-      {isLoading && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center">
-          <p className="text-slate">Loading dashboard...</p>
-        </div>
-      )}
+      {isLoading && <Loading message="Loading dashboard..." />}
 
       {!isLoading && students !== null && students.length === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
@@ -206,7 +204,7 @@ export default function ParentDashboardPage() {
                             {student.studentName}
                           </td>
                           <td className="px-4 py-3 text-sm text-slate">
-                            {student.applyingGrade}
+                            {formatGradeLabel(student.applyingGrade)}
                           </td>
                           <td className="px-4 py-3">
                             <Badge variant={statusVariantMap[student.status]} size="sm">

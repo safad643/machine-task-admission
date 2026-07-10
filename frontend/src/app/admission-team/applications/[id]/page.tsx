@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useApplications } from "@/hooks/useApplications";
 import { routes } from "@/lib/routes";
-import { Button } from "@/components/ui";
+import { Button, Loading } from "@/components/ui";
 import { Card } from "@/components/ui/Card";
 import { StudentStatus } from "@/types";
 import { StudentDetailCard } from "@/app/parent/students/[id]/components/StudentDetailCard";
@@ -76,7 +76,7 @@ export default function ApplicationDetailPage() {
 
       {isLoading && (
         <Card className="p-12 text-center">
-          <p className="text-slate">Loading application details...</p>
+          <Loading message="Loading application details..." className="min-h-0" />
         </Card>
       )}
 

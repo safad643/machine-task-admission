@@ -35,12 +35,20 @@ export class StudentsService {
     return student.save();
   }
 
-  async findAllByParent(parentId: string): Promise<StudentDocument[]> {
-    return this.studentModel
+  async findAllByParent(
+    parentId: string,
+    limit?: number,
+  ): Promise<StudentDocument[]> {
+    const query = this.studentModel
       .find({ parentId: new Types.ObjectId(parentId) })
       .populate('slotId')
-      .sort({ createdAt: -1 })
-      .exec();
+      .sort({ createdAt: -1 });
+
+    if (limit && limit > 0) {
+      query.limit(limit);
+    }
+
+    return query.exec();
   }
 
   async findByIdAndParent(

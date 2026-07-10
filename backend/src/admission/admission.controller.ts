@@ -23,8 +23,12 @@ export class AdmissionController {
   constructor(private readonly admissionService: AdmissionService) {}
 
   @Get('applications')
-  async findAll(@Query('status') status?: StudentStatus) {
-    return this.admissionService.findAll(status);
+  async findAll(
+    @Query('status') status?: StudentStatus,
+    @Query('limit') limit?: string,
+  ) {
+    const parsedLimit = limit ? parseInt(limit, 10) : undefined;
+    return this.admissionService.findAll(status, parsedLimit);
   }
 
   @Get('applications/:id')

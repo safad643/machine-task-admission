@@ -1,13 +1,12 @@
-"use client";
-
-import { useEffect } from "react";
 import Link from "next/link";
-import { useStudents } from "@/hooks/useStudents";
 import { routes } from "@/lib/routes";
+import { endpoints } from "@/lib/endpoints";
+import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui/Button";
 import { StudentStatus } from "@/types";
 import type { BadgeProps } from "@/components/ui/Badge";
+import type { Student } from "@/types";
+import { formatGradeLabel } from "@/lib/utils";
 
 const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
   [StudentStatus.APPLICATION_CREATED]: "warning",
@@ -32,12 +31,8 @@ function formatDate(value: string): string {
   });
 }
 
-export default function StudentsPage() {
-  const { students, isLoading, error, fetchStudents, clearError } = useStudents();
-
-  useEffect(() => {
-    fetchStudents();
-  }, [fetchStudents]);
+export default async function StudentsPage() {
+  const students = await fetchWithAuth<Student[]>(endpoints.students.list);
 
   return (
     <div className="mx-auto max-w-6xl">
@@ -50,39 +45,17 @@ export default function StudentsPage() {
             Manage your children&apos;s admission applications.
           </p>
         </div>
-        <Link
-          href={routes.parent.newStudent}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Add Student
-        </Link>
+        {students.length > 0 && (
+          <Link
+            href={routes.parent.newStudent}
+            className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            Add Student
+          </Link>
+        )}
       </div>
 
-      {error && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{error}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                clearError();
-                fetchStudents();
-              }}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
-
-      {isLoading && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center">
-          <p className="text-slate">Loading students...</p>
-        </div>
-      )}
-
-      {!isLoading && students !== null && students.length === 0 && (
+      {students.length === 0 && (
         <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
           <h2 className="font-serif text-xl font-semibold text-foreground">
             No students yet
@@ -102,7 +75,7 @@ export default function StudentsPage() {
         </div>
       )}
 
-      {!isLoading && students !== null && students.length > 0 && (
+      {students.length > 0 && (
         <div className="overflow-hidden rounded-2xl border border-stone bg-background shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
@@ -135,7 +108,7 @@ export default function StudentsPage() {
                       {student.studentName}
                     </td>
                     <td className="px-6 py-4 text-sm text-slate">
-                      {student.applyingGrade}
+                      {formatGradeLabel(student.applyingGrade)}
                     </td>
                     <td className="px-6 py-4">
                       <Badge variant={statusVariantMap[student.status]} size="sm">

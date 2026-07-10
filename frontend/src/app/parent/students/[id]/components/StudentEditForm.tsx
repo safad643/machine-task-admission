@@ -2,7 +2,8 @@
 
 import { Button, Input, Select } from "@/components/ui";
 import { useStudentEditForm, mapStudentToFormData } from "@/hooks";
-import { Gender, type Student } from "@/types";
+import { Gender, Grade, type Student } from "@/types";
+import { formatGradeLabel } from "@/lib/utils";
 
 interface StudentEditFormProps {
   student: Student;
@@ -76,13 +77,21 @@ export function StudentEditForm({
           {...register("previousSchool")}
         />
 
-        <Input
+        <Select
           label="Applying Grade"
-          placeholder="e.g. Grade 5"
           error={errors.applyingGrade?.message}
           required
           {...register("applyingGrade")}
-        />
+        >
+          <option value="" disabled>
+            Select a grade
+          </option>
+          {Object.values(Grade).map((grade) => (
+            <option key={grade} value={grade}>
+              {formatGradeLabel(grade)}
+            </option>
+          ))}
+        </Select>
 
         {error && (
           <div className="rounded-lg border border-danger/20 bg-danger/10 p-3.5">

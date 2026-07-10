@@ -1,4 +1,10 @@
+import { Grade } from "@/types";
+
 type ClassValue = string | number | boolean | undefined | null | ClassValue[] | { [key: string]: boolean | undefined | null };
+
+export function formatGradeLabel(grade: Grade): string {
+  return grade.replace("GRADE_", "Grade ");
+}
 
 export function cn(...inputs: ClassValue[]): string {
   const classes: string[] = [];

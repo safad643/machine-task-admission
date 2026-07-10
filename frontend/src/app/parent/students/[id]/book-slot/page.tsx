@@ -13,7 +13,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/Card";
-import { Button } from "@/components/ui";
+import { Button, Loading } from "@/components/ui";
 import type { ExamSlot } from "@/types";
 
 function formatSlotDate(value: string): string {
@@ -134,7 +134,7 @@ export default function BookSlotPage() {
 
       {isLoading && (
         <Card className="p-12 text-center">
-          <p className="text-slate">Loading available slots...</p>
+          <Loading message="Loading available slots..." className="min-h-0" />
         </Card>
       )}
 

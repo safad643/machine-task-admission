@@ -20,7 +20,10 @@ export class AdmissionService {
     private readonly studentModel: Model<StudentDocument>,
   ) {}
 
-  async findAll(status?: StudentStatus): Promise<StudentDocument[]> {
+  async findAll(
+    status?: StudentStatus,
+    limit?: number,
+  ): Promise<StudentDocument[]> {
     if (status && !Object.values(StudentStatus).includes(status)) {
       throw new BadRequestException('Invalid status filter');
     }
@@ -30,11 +33,16 @@ export class AdmissionService {
       filter.status = status;
     }
 
-    return this.studentModel
+    const query = this.studentModel
       .find(filter)
       .populate('slotId')
-      .sort({ createdAt: -1 })
-      .exec();
+      .sort({ createdAt: -1 });
+
+    if (limit && limit > 0) {
+      query.limit(limit);
+    }
+
+    return query.exec();
   }
 
   async findOne(id: string): Promise<StudentDocument> {

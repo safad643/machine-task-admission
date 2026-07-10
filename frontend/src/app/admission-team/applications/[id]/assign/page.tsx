@@ -7,7 +7,8 @@ import { useApplications } from "@/hooks/useApplications";
 import { useCourseForm } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { StudentStatus, Course } from "@/types";
-import { Button, Select } from "@/components/ui";
+import { formatGradeLabel } from "@/lib/utils";
+import { Button, Loading, Select } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -111,7 +112,7 @@ export default function ApplicationAssignCoursePage() {
 
       {isLoading && (
         <Card className="p-12 text-center">
-          <p className="text-slate">Loading application details...</p>
+          <Loading message="Loading application details..." className="min-h-0" />
         </Card>
       )}
 
@@ -128,7 +129,7 @@ export default function ApplicationAssignCoursePage() {
               {application.studentName}
             </CardTitle>
             <CardDescription>
-              Applying grade {application.applyingGrade} • Application ID: {application._id}
+              Applying grade {formatGradeLabel(application.applyingGrade)} • Application ID: {application._id}
             </CardDescription>
           </CardHeader>
           <CardContent>
