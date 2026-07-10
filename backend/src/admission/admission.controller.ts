@@ -39,7 +39,7 @@ export class AdmissionController {
 
   @Patch('applications/:id/score')
   async enterScore(@Param('id') id: string, @Body() dto: EnterScoreDto) {
-    return this.admissionService.enterScore(id, dto.score);
+    return this.admissionService.enterScore(id, dto.examScore);
   }
 
   @Patch('applications/:id/assign-course')

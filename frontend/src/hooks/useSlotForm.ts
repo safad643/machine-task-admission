@@ -55,9 +55,10 @@ export function useSlotForm({
 
   async function submit(data: ExamSlotFormData) {
     try {
+      const startDate = data.startTime.slice(0, 10);
       await createSlot({
         startTime: new Date(data.startTime).toISOString(),
-        endTime: new Date(data.endTime).toISOString(),
+        endTime: new Date(`${startDate}T${data.endTime}`).toISOString(),
         capacity: Number.parseInt(data.capacity, 10),
       });
       form.reset(DEFAULT_VALUES);
@@ -83,9 +84,8 @@ export function useSlotForm({
     },
     endTime: {
       label: "End Time",
-      type: "datetime-local",
+      type: "time",
       required: true,
-      min: minDateTime,
       register: register("endTime"),
       error: errors.endTime?.message,
     },

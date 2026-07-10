@@ -4,7 +4,6 @@ import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
 import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Course } from "@/types";
@@ -23,11 +22,6 @@ export default async function CompletedAdmissionsPage() {
     <PageShell
       title="Completed Admissions"
       description="View all finalized admissions with scores and assigned courses."
-      actions={
-        <Button asChild variant="outline" size="md">
-          <Link href={routes.admissionTeam.applications}>Back to Applications</Link>
-        </Button>
-      }
     >
       {completedCount === 0 && (
         <EmptyState

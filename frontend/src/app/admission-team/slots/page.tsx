@@ -13,7 +13,7 @@ export default async function ExamSlotsPage() {
       title="Exam Slot Management"
       description="Create and manage exam slots for admission applicants."
     >
-      <div className="mb-8 grid gap-6 lg:grid-cols-3">
+      <div className="mb-8 grid gap-6 lg:grid-cols-4">
         <CreateSlotForm />
         <SlotsTable slots={slots} />
       </div>

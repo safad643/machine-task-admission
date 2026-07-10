@@ -96,22 +96,24 @@ export const examSlotSchema = z
       .string()
       .min(1, "End time is required")
       .regex(
-        /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/,
-        "End time must be a valid date and time"
-      )
-      .refine((value) => !Number.isNaN(new Date(value).getTime()), {
-        message: "End time must be a valid date and time",
-      }),
+        /^([01]\d|2[0-3]):[0-5]\d$/,
+        "End time must be a valid time"
+      ),
     capacity: z
       .string()
       .min(1, "Capacity is required")
       .regex(/^[1-9]\d*$/, "Capacity must be a positive whole number"),
   })
   .refine(
-    (data) =>
-      Number.isNaN(new Date(data.startTime).getTime()) ||
-      Number.isNaN(new Date(data.endTime).getTime()) ||
-      new Date(data.endTime).getTime() > new Date(data.startTime).getTime(),
+    (data) => {
+      const startDate = data.startTime.slice(0, 10);
+      const endDateTime = `${startDate}T${data.endTime}`;
+      return (
+        Number.isNaN(new Date(data.startTime).getTime()) ||
+        Number.isNaN(new Date(endDateTime).getTime()) ||
+        new Date(endDateTime).getTime() > new Date(data.startTime).getTime()
+      );
+    },
     {
       message: "End time must be after start time",
       path: ["endTime"],

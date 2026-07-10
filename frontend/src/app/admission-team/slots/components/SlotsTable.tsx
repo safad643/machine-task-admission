@@ -34,7 +34,7 @@ export function SlotsTable({ slots }: SlotsTableProps) {
   }
 
   return (
-    <div className="lg:col-span-2">
+    <div className="lg:col-span-3">
       <Card>
         <CardHeader>
           <CardTitle className="font-serif text-xl">All Slots</CardTitle>
@@ -96,13 +96,13 @@ export function SlotsTable({ slots }: SlotsTableProps) {
                         key={slot._id}
                         className="border-b border-stone last:border-b-0 hover:bg-paper/50"
                       >
-                        <td className="px-4 py-3 text-sm text-foreground">
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-foreground">
                           {formatSlotDate(slot.startTime)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate">
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-slate">
                           {formatSlotTime(slot.startTime)}
                         </td>
-                        <td className="px-4 py-3 text-sm text-slate">
+                        <td className="whitespace-nowrap px-4 py-3 text-sm text-slate">
                           {formatSlotTime(slot.endTime)}
                         </td>
                         <td className="px-4 py-3 text-sm text-foreground">
