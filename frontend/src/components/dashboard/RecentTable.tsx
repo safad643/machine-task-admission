@@ -11,8 +11,8 @@ import { formatGradeLabel } from "@/lib/utils";
 import {
   statusVariantMap,
   statusLabelMap,
-  formatDate,
 } from "@/lib/status-utils";
+import { formatDate } from "@/lib/date-utils";
 import type { Student } from "@/types";
 
 interface RecentTableProps {

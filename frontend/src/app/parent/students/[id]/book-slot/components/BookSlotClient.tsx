@@ -15,27 +15,12 @@ import {
 } from "@/components/ui/Card";
 import { Button } from "@/components/ui";
 import type { ExamSlot, Student } from "@/types";
+import { formatSlotDate, formatSlotTime } from "@/lib/date-utils";
 
 interface BookSlotClientProps {
   student: Student;
   slots: ExamSlot[];
   id: string;
-}
-
-function formatSlotDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    weekday: "long",
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
-function formatSlotTime(value: string): string {
-  return new Date(value).toLocaleTimeString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 }
 
 export function BookSlotClient({ student, slots, id }: BookSlotClientProps) {
@@ -118,7 +103,7 @@ export function BookSlotClient({ student, slots, id }: BookSlotClientProps) {
               >
                 <CardHeader>
                   <CardTitle className="font-serif text-lg">
-                    {formatSlotDate(slot.startTime)}
+                    {formatSlotDate(slot.startTime, { long: true })}
                   </CardTitle>
                   <CardDescription>
                     {formatSlotTime(slot.startTime)} –{" "}
@@ -155,7 +140,7 @@ export function BookSlotClient({ student, slots, id }: BookSlotClientProps) {
             Selected Slot
           </h2>
           <p className="mt-1 text-slate">
-            {formatSlotDate(selectedSlot.startTime)} from{" "}
+            {formatSlotDate(selectedSlot.startTime, { long: true })} from{" "}
             {formatSlotTime(selectedSlot.startTime)} to{" "}
             {formatSlotTime(selectedSlot.endTime)}
           </p>

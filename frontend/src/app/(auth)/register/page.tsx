@@ -1,14 +1,31 @@
 "use client";
 
 import Link from "next/link";
-import { useRegisterForm } from "@/hooks";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRegister } from "@/hooks/useAuth";
 import { routes } from "@/lib/routes";
+import { registerSchema, type RegisterFormData } from "@/lib/schemas";
 import { Button } from "@/components/ui";
 import { Input } from "@/components/ui";
 
 export default function RegisterPage() {
-  const { form, submit, isLoading, error } = useRegisterForm();
-  const { register, formState: { errors } } = form;
+  const router = useRouter();
+  const { register: registerUser, isLoading, error } = useRegister();
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { name: "", email: "", password: "" },
+  });
+
+  async function submit(data: RegisterFormData) {
+    try {
+      await registerUser(data);
+      router.push("/login");
+    } catch {
+      // Error is already captured in useRegister.
+    }
+  }
 
   return (
     <>
@@ -20,7 +37,7 @@ export default function RegisterPage() {
       </div>
 
       <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-        <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
           <Input
             label="Full name"
             type="text"

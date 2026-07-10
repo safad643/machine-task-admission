@@ -17,8 +17,9 @@ export function StudentEditForm({
   onCancel,
 }: StudentEditFormProps) {
   const {
-    form,
-    submit,
+    fields,
+    onSubmit,
+    onReset,
     isMutating,
     error,
     clearError,
@@ -28,41 +29,36 @@ export function StudentEditForm({
     onSuccess,
   });
 
-  const {
-    register,
-    formState: { errors },
-  } = form;
-
   function handleCancel() {
     clearError();
-    form.reset(mapStudentToFormData(student));
+    onReset();
     onCancel?.();
   }
 
   return (
     <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-      <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+      <form onSubmit={onSubmit} className="flex flex-col gap-5" noValidate>
         <Input
-          label="Student Name"
-          placeholder="e.g. Jane Doe"
-          error={errors.studentName?.message}
-          required
-          {...register("studentName")}
+          label={fields.studentName.label}
+          placeholder={fields.studentName.placeholder}
+          error={fields.studentName.error}
+          required={fields.studentName.required}
+          {...fields.studentName.register}
         />
 
         <Input
-          label="Date of Birth"
-          type="date"
-          error={errors.dateOfBirth?.message}
-          required
-          {...register("dateOfBirth")}
+          label={fields.dateOfBirth.label}
+          type={fields.dateOfBirth.type}
+          error={fields.dateOfBirth.error}
+          required={fields.dateOfBirth.required}
+          {...fields.dateOfBirth.register}
         />
 
         <Select
-          label="Gender"
-          error={errors.gender?.message}
-          required
-          {...register("gender")}
+          label={fields.gender.label}
+          error={fields.gender.error}
+          required={fields.gender.required}
+          {...fields.gender.register}
         >
           <option value={Gender.MALE}>Male</option>
           <option value={Gender.FEMALE}>Female</option>
@@ -70,18 +66,18 @@ export function StudentEditForm({
         </Select>
 
         <Input
-          label="Previous School"
-          placeholder="e.g. Springdale Elementary"
-          error={errors.previousSchool?.message}
-          required
-          {...register("previousSchool")}
+          label={fields.previousSchool.label}
+          placeholder={fields.previousSchool.placeholder}
+          error={fields.previousSchool.error}
+          required={fields.previousSchool.required}
+          {...fields.previousSchool.register}
         />
 
         <Select
-          label="Applying Grade"
-          error={errors.applyingGrade?.message}
-          required
-          {...register("applyingGrade")}
+          label={fields.applyingGrade.label}
+          error={fields.applyingGrade.error}
+          required={fields.applyingGrade.required}
+          {...fields.applyingGrade.register}
         >
           <option value="" disabled>
             Select a grade

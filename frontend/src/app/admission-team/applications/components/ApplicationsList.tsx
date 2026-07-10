@@ -4,35 +4,17 @@ import { useState } from "react";
 import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui";
 import { Select } from "@/components/ui/Select";
 import { StudentStatus } from "@/types";
-import type { BadgeProps } from "@/components/ui/Badge";
 import type { Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
-
-const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
-  [StudentStatus.APPLICATION_CREATED]: "warning",
-  [StudentStatus.REGISTRATION_FEE_PAID]: "secondary",
-  [StudentStatus.SLOT_BOOKED]: "default",
-  [StudentStatus.EXAM_COMPLETED]: "outline",
-  [StudentStatus.ADMISSION_COMPLETED]: "success",
-};
-
-const statusLabelMap: Record<StudentStatus, string> = {
-  [StudentStatus.APPLICATION_CREATED]: "Application Created",
-  [StudentStatus.REGISTRATION_FEE_PAID]: "Registration Fee Paid",
-  [StudentStatus.SLOT_BOOKED]: "Slot Booked",
-  [StudentStatus.EXAM_COMPLETED]: "Exam Completed",
-  [StudentStatus.ADMISSION_COMPLETED]: "Completed",
-};
-
-const statusOrder: StudentStatus[] = [
-  StudentStatus.APPLICATION_CREATED,
-  StudentStatus.REGISTRATION_FEE_PAID,
-  StudentStatus.SLOT_BOOKED,
-  StudentStatus.EXAM_COMPLETED,
-  StudentStatus.ADMISSION_COMPLETED,
-];
+import {
+  statusVariantMap,
+  statusLabelMap,
+  statusOrder,
+} from "@/lib/status-utils";
+import { formatDate } from "@/lib/date-utils";
 
 const filterOptions: Array<{ value: "ALL" | StudentStatus; label: string }> = [
   { value: "ALL", label: "All Applications" },
@@ -41,14 +23,6 @@ const filterOptions: Array<{ value: "ALL" | StudentStatus; label: string }> = [
     label: statusLabelMap[status],
   })),
 ];
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
 
 interface ApplicationsListProps {
   applications: Student[];
@@ -73,12 +47,9 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
             Review and manage all admission applications.
           </p>
         </div>
-        <Link
-          href={routes.admissionTeam.slots}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Manage Slots
-        </Link>
+        <Button asChild variant="primary" size="md">
+          <Link href={routes.admissionTeam.slots}>Manage Slots</Link>
+        </Button>
       </div>
 
       <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end">

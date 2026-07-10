@@ -2,6 +2,7 @@ import Link from "next/link";
 import { fetchWithAuth } from "@/lib/data";
 import { endpoints } from "@/lib/endpoints";
 import { routes } from "@/lib/routes";
+import { Button } from "@/components/ui";
 import { Student, StudentStatus } from "@/types";
 import { StudentDetailCard } from "@/app/parent/students/[id]/components/StudentDetailCard";
 
@@ -38,20 +39,14 @@ export default async function ApplicationDetailPage({
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
           {application.status === StudentStatus.SLOT_BOOKED && (
-            <Link
-              href={routes.admissionTeam.applicationScore(id)}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Enter Exam Score
-            </Link>
+            <Button asChild variant="primary" size="md">
+              <Link href={routes.admissionTeam.applicationScore(id)}>Enter Exam Score</Link>
+            </Button>
           )}
           {application.status === StudentStatus.EXAM_COMPLETED && (
-            <Link
-              href={routes.admissionTeam.applicationAssign(id)}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Assign Course
-            </Link>
+            <Button asChild variant="primary" size="md">
+              <Link href={routes.admissionTeam.applicationAssign(id)}>Assign Course</Link>
+            </Button>
           )}
         </div>
       </div>

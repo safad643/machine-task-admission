@@ -3,24 +3,12 @@ import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
 import { StudentStatus, Course } from "@/types";
 import type { Student } from "@/types";
-import { formatGradeLabel } from "@/lib/utils";
-
-const courseLabelMap: Record<Course, string> = {
-  [Course.SCIENCE]: "Science",
-  [Course.COMMERCE]: "Commerce",
-  [Course.ARTS]: "Arts",
-};
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
+import { formatDate } from "@/lib/date-utils";
 
 function getCompletedApplications(applications: Student[]): Student[] {
   return applications
@@ -50,12 +38,9 @@ export default async function CompletedAdmissionsPage() {
             View all finalized admissions with scores and assigned courses.
           </p>
         </div>
-        <Link
-          href={routes.admissionTeam.applications}
-          className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-        >
-          Back to Applications
-        </Link>
+        <Button asChild variant="outline" size="md">
+          <Link href={routes.admissionTeam.applications}>Back to Applications</Link>
+        </Button>
       </div>
 
       {completedCount === 0 && (

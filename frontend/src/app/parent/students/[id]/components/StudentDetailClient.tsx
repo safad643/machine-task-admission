@@ -65,9 +65,9 @@ export function StudentDetailClient({ student, id }: StudentDetailClientProps) {
           )}
           {student.status === StudentStatus.REGISTRATION_FEE_PAID &&
             !student.slotId && (
-              <Link href={routes.parent.bookSlot(id)}>
-                <Button>Book Exam Slot</Button>
-              </Link>
+              <Button asChild>
+                <Link href={routes.parent.bookSlot(id)}>Book Exam Slot</Link>
+              </Button>
             )}
         </div>
       </div>

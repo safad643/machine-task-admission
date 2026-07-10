@@ -7,16 +7,20 @@ import {
 } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import type { Student } from "@/types";
-import { formatGradeLabel } from "@/lib/utils";
+import {
+  formatGradeLabel,
+  formatGenderLabel,
+  formatCourseLabel,
+} from "@/lib/utils";
 import {
   statusVariantMap,
   formatStatusLabel,
-  formatGenderLabel,
-  formatCourseLabel,
+} from "@/lib/status-utils";
+import {
   formatDate,
   formatDateTime,
   formatSlotRange,
-} from "../utils";
+} from "@/lib/date-utils";
 import { StatusTimeline } from "./StatusTimeline";
 
 interface StudentDetailCardProps {

@@ -1,18 +1,43 @@
 "use client";
 
 import Link from "next/link";
-import { useStudentForm } from "@/hooks/useStudentForm";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useStudents } from "@/hooks/useStudents";
 import { routes } from "@/lib/routes";
+import { createStudentSchema, type CreateStudentFormData } from "@/lib/schemas";
 import { Button, Input, Select } from "@/components/ui";
 import { Gender, Grade } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
 
 export default function NewStudentPage() {
-  const { form, submit, isMutating, error, clearError } = useStudentForm();
+  const router = useRouter();
+  const { createStudent, isMutating, error, clearError } = useStudents();
   const {
     register,
+    handleSubmit,
     formState: { errors },
-  } = form;
+  } = useForm<CreateStudentFormData>({
+    resolver: zodResolver(createStudentSchema),
+    defaultValues: {
+      studentName: "",
+      dateOfBirth: "",
+      gender: Gender.MALE,
+      previousSchool: "",
+      applyingGrade: "" as unknown as Grade,
+    },
+  });
+
+  async function submit(data: CreateStudentFormData) {
+    try {
+      await createStudent(data);
+      router.push(routes.parent.students);
+    } catch {
+      // Error is already captured in useStudents; swallow to avoid
+      // unhandled-rejection warnings from react-hook-form's handleSubmit.
+    }
+  }
 
   return (
     <div className="mx-auto max-w-2xl">
@@ -26,7 +51,7 @@ export default function NewStudentPage() {
       </div>
 
       <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-        <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
           <Input
             label="Student Name"
             placeholder="e.g. Jane Doe"
@@ -96,12 +121,9 @@ export default function NewStudentPage() {
           )}
 
           <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-            <Link
-              href={routes.parent.students}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/20 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Cancel
-            </Link>
+            <Button asChild variant="outline" size="md">
+              <Link href={routes.parent.students}>Cancel</Link>
+            </Button>
             <Button type="submit" isLoading={isMutating}>
               Add Student
             </Button>

@@ -7,6 +7,7 @@ import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { RecentTable } from "@/components/dashboard/RecentTable";
 import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
 import { getStatusCounts } from "@/lib/status-utils";
+import { Button } from "@/components/ui";
 import type { Student } from "@/types";
 
 export default async function AdmissionTeamDashboardPage() {
@@ -22,18 +23,12 @@ export default async function AdmissionTeamDashboardPage() {
       description="Overview of all admission applications and their progress."
       actions={
         <>
-          <Link
-            href={routes.admissionTeam.slots}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-border bg-background px-4 text-sm font-medium text-foreground transition-colors hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            Manage Slots
-          </Link>
-          <Link
-            href={routes.admissionTeam.applications}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            View Applications
-          </Link>
+          <Button asChild variant="outline" size="md">
+            <Link href={routes.admissionTeam.slots}>Manage Slots</Link>
+          </Button>
+          <Button asChild variant="primary" size="md">
+            <Link href={routes.admissionTeam.applications}>View Applications</Link>
+          </Button>
         </>
       }
     >

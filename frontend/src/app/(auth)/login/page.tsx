@@ -1,14 +1,32 @@
 "use client";
 
 import Link from "next/link";
-import { useLoginForm } from "@/hooks";
-import { routes } from "@/lib/routes";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLogin } from "@/hooks/useAuth";
+import { routes, getDashboardForRole } from "@/lib/routes";
+import { loginSchema, type LoginFormData } from "@/lib/schemas";
 import { Button } from "@/components/ui";
 import { Input } from "@/components/ui";
 
 export default function LoginPage() {
-  const { form, submit, isLoading, error } = useLoginForm();
-  const { register, formState: { errors } } = form;
+  const router = useRouter();
+  const { login, isLoading, error } = useLogin();
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  async function submit(data: LoginFormData) {
+    try {
+      const res = await login(data);
+      router.push(getDashboardForRole(res.role));
+    } catch {
+      // Error is already captured in useLogin; swallow to avoid
+      // unhandled-rejection warnings from react-hook-form's handleSubmit.
+    }
+  }
 
   return (
     <>
@@ -20,7 +38,7 @@ export default function LoginPage() {
       </div>
 
       <div className="rounded-2xl border border-stone bg-background p-6 shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)] sm:p-8">
-        <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+        <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
           <Input
             label="Email"
             type="email"

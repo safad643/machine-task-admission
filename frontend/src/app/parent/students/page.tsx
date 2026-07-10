@@ -3,33 +3,14 @@ import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
-import { StudentStatus } from "@/types";
-import type { BadgeProps } from "@/components/ui/Badge";
+import { Button } from "@/components/ui";
 import type { Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
-
-const statusVariantMap: Record<StudentStatus, BadgeProps["variant"]> = {
-  [StudentStatus.APPLICATION_CREATED]: "warning",
-  [StudentStatus.REGISTRATION_FEE_PAID]: "secondary",
-  [StudentStatus.SLOT_BOOKED]: "default",
-  [StudentStatus.EXAM_COMPLETED]: "outline",
-  [StudentStatus.ADMISSION_COMPLETED]: "success",
-};
-
-function formatStatusLabel(status: StudentStatus): string {
-  return status
-    .toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
-
-function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
+import {
+  statusVariantMap,
+  formatStatusLabel,
+} from "@/lib/status-utils";
+import { formatDate } from "@/lib/date-utils";
 
 export default async function StudentsPage() {
   const students = await fetchWithAuth<Student[]>(endpoints.students.list);
@@ -46,12 +27,9 @@ export default async function StudentsPage() {
           </p>
         </div>
         {students.length > 0 && (
-          <Link
-            href={routes.parent.newStudent}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            Add Student
-          </Link>
+          <Button asChild variant="primary" size="md">
+            <Link href={routes.parent.newStudent}>Add Student</Link>
+          </Button>
         )}
       </div>
 
@@ -65,12 +43,9 @@ export default async function StudentsPage() {
             process.
           </p>
           <div className="mt-6">
-            <Link
-              href={routes.parent.newStudent}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Add Student
-            </Link>
+            <Button asChild variant="primary" size="md">
+              <Link href={routes.parent.newStudent}>Add Student</Link>
+            </Button>
           </div>
         </div>
       )}

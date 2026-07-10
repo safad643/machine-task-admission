@@ -1,20 +1,9 @@
 import { StudentStatus } from "@/types";
 import { cn } from "@/lib/utils";
-
-const statusOrder: StudentStatus[] = [
-  StudentStatus.APPLICATION_CREATED,
-  StudentStatus.REGISTRATION_FEE_PAID,
-  StudentStatus.SLOT_BOOKED,
-  StudentStatus.EXAM_COMPLETED,
-  StudentStatus.ADMISSION_COMPLETED,
-];
-
-function formatStatusLabel(status: StudentStatus): string {
-  return status
-    .toLowerCase()
-    .replace(/_/g, " ")
-    .replace(/\b\w/g, (char) => char.toUpperCase());
-}
+import {
+  statusOrder,
+  formatStatusLabel,
+} from "@/lib/status-utils";
 
 interface StatusTimelineProps {
   status: StudentStatus;

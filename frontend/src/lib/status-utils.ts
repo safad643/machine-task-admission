@@ -25,14 +25,6 @@ export const statusOrder: StudentStatus[] = [
   StudentStatus.ADMISSION_COMPLETED,
 ];
 
-export function formatDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
 export function getStatusCounts<T extends { status: StudentStatus }>(
   items: T[]
 ): Record<StudentStatus, number> {
@@ -45,4 +37,11 @@ export function getStatusCounts<T extends { status: StudentStatus }>(
   }
 
   return counts;
+}
+
+export function formatStatusLabel(status: StudentStatus): string {
+  return status
+    .toLowerCase()
+    .replace(/_/g, " ")
+    .replace(/\b\w/g, (char) => char.toUpperCase());
 }

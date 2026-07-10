@@ -3,8 +3,11 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useScoreForm } from "@/hooks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useApplications } from "@/hooks";
 import { routes } from "@/lib/routes";
+import { scoreSchema, type ScoreFormData } from "@/lib/schemas";
 import { StudentStatus, type Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
 import { Button, Input } from "@/components/ui";
@@ -23,14 +26,23 @@ interface ScoreFormProps {
 
 export default function ScoreForm({ application, id }: ScoreFormProps) {
   const router = useRouter();
+  const { assignScore, isMutating, error: formError, clearError: clearFormError } = useApplications();
 
-  const {
-    form,
-    submit,
-    isMutating,
-    error: formError,
-    clearError: clearFormError,
-  } = useScoreForm({ initialScore: application.examScore });
+  const { register, handleSubmit, formState: { errors } } = useForm<ScoreFormData>({
+    resolver: zodResolver(scoreSchema),
+    defaultValues: {
+      examScore: application.examScore ?? undefined,
+    },
+  });
+
+  async function submit(data: ScoreFormData) {
+    try {
+      await assignScore(id, data.examScore);
+      router.push(routes.admissionTeam.applicationDetail(id));
+    } catch {
+      // Error is already captured in useApplications.
+    }
+  }
 
   useEffect(() => {
     if (application.status !== StudentStatus.SLOT_BOOKED) {
@@ -85,7 +97,7 @@ export default function ScoreForm({ application, id }: ScoreFormProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+          <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
             <Input
               label="Exam Score"
               type="number"
@@ -95,21 +107,20 @@ export default function ScoreForm({ application, id }: ScoreFormProps) {
               placeholder="e.g. 85"
               helperText="Enter a whole number between 0 and 100."
               required
-              {...form.register("examScore", { valueAsNumber: true })}
-              error={form.formState.errors.examScore?.message}
+              {...register("examScore", { valueAsNumber: true })}
+              error={errors.examScore?.message}
             />
 
             <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-              <Link href={routes.admissionTeam.applicationDetail(id)}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isMutating}
-                  className="w-full sm:w-auto"
-                >
-                  Cancel
-                </Button>
-              </Link>
+              <Button
+                asChild
+                type="button"
+                variant="outline"
+                disabled={isMutating}
+                className="w-full sm:w-auto"
+              >
+                <Link href={routes.admissionTeam.applicationDetail(id)}>Cancel</Link>
+              </Button>
               <Button
                 type="submit"
                 isLoading={isMutating}

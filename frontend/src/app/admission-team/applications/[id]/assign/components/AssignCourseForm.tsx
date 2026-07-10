@@ -3,10 +3,13 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { useCourseForm } from "@/hooks";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useApplications } from "@/hooks";
 import { routes } from "@/lib/routes";
+import { courseSchema, type CourseFormData } from "@/lib/schemas";
 import { StudentStatus, Course, type Student } from "@/types";
-import { formatGradeLabel } from "@/lib/utils";
+import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
 import { Button, Select } from "@/components/ui";
 import {
   Card,
@@ -18,9 +21,9 @@ import {
 
 const courseOptions = [
   { value: "", label: "Select a course" },
-  { value: Course.SCIENCE, label: "Science" },
-  { value: Course.COMMERCE, label: "Commerce" },
-  { value: Course.ARTS, label: "Arts" },
+  { value: Course.SCIENCE, label: courseLabelMap[Course.SCIENCE] },
+  { value: Course.COMMERCE, label: courseLabelMap[Course.COMMERCE] },
+  { value: Course.ARTS, label: courseLabelMap[Course.ARTS] },
 ];
 
 interface AssignCourseFormProps {
@@ -33,14 +36,23 @@ export default function AssignCourseForm({
   id,
 }: AssignCourseFormProps) {
   const router = useRouter();
+  const { assignCourse, isMutating, error: formError, clearError: clearFormError } = useApplications();
 
-  const {
-    form,
-    submit,
-    isMutating,
-    error: formError,
-    clearError: clearFormError,
-  } = useCourseForm({ initialCourse: application.assignedCourse });
+  const { register, handleSubmit, formState: { errors } } = useForm<CourseFormData>({
+    resolver: zodResolver(courseSchema),
+    defaultValues: {
+      assignedCourse: application.assignedCourse ?? undefined,
+    },
+  });
+
+  async function submit(data: CourseFormData) {
+    try {
+      await assignCourse(id, data.assignedCourse);
+      router.push(routes.admissionTeam.applicationDetail(id));
+    } catch {
+      // Error is already captured in useApplications.
+    }
+  }
 
   useEffect(() => {
     if (application.status !== StudentStatus.EXAM_COMPLETED) {
@@ -95,13 +107,13 @@ export default function AssignCourseForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={submit} className="flex flex-col gap-5" noValidate>
+          <form onSubmit={handleSubmit(submit)} className="flex flex-col gap-5" noValidate>
             <Select
               label="Course"
               helperText="Choose one of the available courses."
               required
-              {...form.register("assignedCourse")}
-              error={form.formState.errors.assignedCourse?.message}
+              {...register("assignedCourse")}
+              error={errors.assignedCourse?.message}
             >
               {courseOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -111,16 +123,15 @@ export default function AssignCourseForm({
             </Select>
 
             <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-              <Link href={routes.admissionTeam.applicationDetail(id)}>
-                <Button
-                  type="button"
-                  variant="outline"
-                  disabled={isMutating}
-                  className="w-full sm:w-auto"
-                >
-                  Cancel
-                </Button>
-              </Link>
+              <Button
+                asChild
+                type="button"
+                variant="outline"
+                disabled={isMutating}
+                className="w-full sm:w-auto"
+              >
+                <Link href={routes.admissionTeam.applicationDetail(id)}>Cancel</Link>
+              </Button>
               <Button
                 type="submit"
                 isLoading={isMutating}

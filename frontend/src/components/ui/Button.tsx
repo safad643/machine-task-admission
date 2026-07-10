@@ -1,6 +1,13 @@
 "use client";
 
-import { forwardRef, type ButtonHTMLAttributes, type ReactNode } from "react";
+import {
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  type ButtonHTMLAttributes,
+  type ReactElement,
+  type ReactNode,
+} from "react";
 import { Loader } from "./Loader";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +18,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
   fullWidth?: boolean;
+  asChild?: boolean;
 }
 
 const variantClasses = {
@@ -43,6 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       rightIcon,
       fullWidth = false,
       disabled,
+      asChild = false,
       children,
       ...props
     },
@@ -50,19 +59,34 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const isDisabled = disabled || isLoading;
 
+    const buttonClasses = cn(
+      "inline-flex items-center justify-center rounded-md border font-medium transition-colors",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+      "disabled:pointer-events-none disabled:opacity-50",
+      variantClasses[variant],
+      sizeClasses[size],
+      fullWidth && "w-full",
+      className
+    );
+
+    if (asChild && isValidElement(children)) {
+      const child = children as ReactElement<{
+        className?: string;
+        ref?: React.Ref<HTMLElement>;
+        "aria-disabled"?: boolean | "true" | "false";
+      }>;
+      return cloneElement(child, {
+        ref,
+        className: cn(buttonClasses, child.props.className),
+        "aria-disabled": isDisabled || undefined,
+      });
+    }
+
     return (
       <button
         ref={ref}
         disabled={isDisabled}
-        className={cn(
-          "inline-flex items-center justify-center rounded-md border font-medium transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-background",
-          "disabled:pointer-events-none disabled:opacity-50",
-          variantClasses[variant],
-          sizeClasses[size],
-          fullWidth && "w-full",
-          className
-        )}
+        className={buttonClasses}
         {...props}
       >
         {isLoading ? (

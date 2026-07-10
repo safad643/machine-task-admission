@@ -12,22 +12,7 @@ import {
   CardDescription,
 } from "@/components/ui/Card";
 import type { ExamSlot } from "@/types";
-
-function formatSlotDate(value: string): string {
-  return new Date(value).toLocaleDateString(undefined, {
-    weekday: "short",
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-function formatSlotTime(value: string): string {
-  return new Date(value).toLocaleTimeString(undefined, {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-}
+import { formatSlotDate, formatSlotTime } from "@/lib/date-utils";
 
 interface SlotsTableProps {
   slots: ExamSlot[];

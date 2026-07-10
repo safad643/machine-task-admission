@@ -7,6 +7,7 @@ import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { RecentTable } from "@/components/dashboard/RecentTable";
 import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
 import { getStatusCounts } from "@/lib/status-utils";
+import { Button } from "@/components/ui";
 import type { Student } from "@/types";
 
 export default async function ParentDashboardPage() {
@@ -22,12 +23,9 @@ export default async function ParentDashboardPage() {
       description="Overview of your admission applications."
       actions={
         students !== null && students.length > 0 ? (
-          <Link
-            href={routes.parent.newStudent}
-            className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            Add Student
-          </Link>
+          <Button asChild variant="primary" size="md">
+            <Link href={routes.parent.newStudent}>Add Student</Link>
+          </Button>
         ) : null
       }
     >
@@ -41,12 +39,9 @@ export default async function ParentDashboardPage() {
             process.
           </p>
           <div className="mt-6">
-            <Link
-              href={routes.parent.newStudent}
-              className="inline-flex h-10 items-center justify-center rounded-md border border-transparent bg-foreground px-4 text-sm font-medium text-background transition-colors hover:bg-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-foreground/30 focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Add Student
-            </Link>
+            <Button asChild variant="primary" size="md">
+              <Link href={routes.parent.newStudent}>Add Student</Link>
+            </Button>
           </div>
         </div>
       )}
