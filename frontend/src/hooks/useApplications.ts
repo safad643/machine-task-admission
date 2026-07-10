@@ -43,7 +43,7 @@ export function useApplications(): UseApplicationsReturn {
     try {
       const { data } = await api.patch<Student>(
         endpoints.admission.assignCourse(id),
-        { assignedCourse }
+        { course: assignedCourse }
       );
       return data;
     } catch (err) {

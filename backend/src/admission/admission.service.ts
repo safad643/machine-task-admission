@@ -60,10 +60,7 @@ export class AdmissionService {
       desc: -1,
     };
 
-    if (
-      !allowedFields.includes(field) ||
-      !(direction in allowedDirections)
-    ) {
+    if (!allowedFields.includes(field) || !(direction in allowedDirections)) {
       throw new BadRequestException('Invalid sort parameter');
     }
 
