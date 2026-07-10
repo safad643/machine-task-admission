@@ -3,6 +3,7 @@ import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { Button } from "@/components/ui";
 import type { Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
@@ -34,20 +35,15 @@ export default async function StudentsPage() {
       </div>
 
       {students.length === 0 && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <h2 className="font-serif text-xl font-semibold text-foreground">
-            No students yet
-          </h2>
-          <p className="mx-auto mt-2 max-w-sm text-slate">
-            Get started by adding your first student to begin the admissions
-            process.
-          </p>
-          <div className="mt-6">
+        <EmptyState
+          title="No students yet"
+          description="Get started by adding your first student to begin the admissions process."
+          action={
             <Button asChild variant="primary" size="md">
               <Link href={routes.parent.newStudent}>Add Student</Link>
             </Button>
-          </div>
-        </div>
+          }
+        />
       )}
 
       {students.length > 0 && (

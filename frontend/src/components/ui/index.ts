@@ -20,3 +20,4 @@ export { Loader, type LoaderProps } from "./Loader";
 export { Loading, type LoadingProps } from "./Loading";
 export { Layout, type LayoutProps, type NavItem } from "./Layout";
 export { Confirmation, type ConfirmationProps } from "./Confirmation";
+export { EmptyState, type EmptyStateProps } from "./EmptyState";

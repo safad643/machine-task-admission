@@ -8,6 +8,7 @@ import { RecentTable } from "@/components/dashboard/RecentTable";
 import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
 import { getStatusCounts } from "@/lib/status-utils";
 import { Button } from "@/components/ui";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { Student } from "@/types";
 
 export default async function ParentDashboardPage() {
@@ -30,20 +31,15 @@ export default async function ParentDashboardPage() {
       }
     >
       {students !== null && students.length === 0 && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <h2 className="font-serif text-xl font-semibold text-foreground">
-            No applications yet
-          </h2>
-          <p className="mx-auto mt-2 max-w-sm text-slate">
-            Get started by adding your first student to begin the admissions
-            process.
-          </p>
-          <div className="mt-6">
+        <EmptyState
+          title="No applications yet"
+          description="Get started by adding your first student to begin the admissions process."
+          action={
             <Button asChild variant="primary" size="md">
               <Link href={routes.parent.newStudent}>Add Student</Link>
             </Button>
-          </div>
-        </div>
+          }
+        />
       )}
 
       {students !== null && students.length > 0 && statusCounts !== null && (

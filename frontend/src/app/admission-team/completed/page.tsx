@@ -5,6 +5,7 @@ import { fetchWithAuth } from "@/lib/data";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Card, CardHeader, CardTitle } from "@/components/ui/Card";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { StudentStatus, Course } from "@/types";
 import type { Student } from "@/types";
 import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
@@ -44,23 +45,18 @@ export default async function CompletedAdmissionsPage() {
       </div>
 
       {completedCount === 0 && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <h2 className="font-serif text-xl font-semibold text-foreground">
-            No completed admissions yet
-          </h2>
-          <p className="mx-auto mt-2 max-w-sm text-slate">
-            Completed admissions will appear here once the admission team
-            assigns courses to students who have finished their exams.
-          </p>
-          <div className="mt-6">
+        <EmptyState
+          title="No completed admissions yet"
+          description="Completed admissions will appear here once the admission team assigns courses to students who have finished their exams."
+          action={
             <Link
               href={routes.admissionTeam.applications}
               className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
             >
               Go to applications &rarr;
             </Link>
-          </div>
-        </div>
+          }
+        />
       )}
 
       {completedCount > 0 && (

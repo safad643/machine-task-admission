@@ -6,6 +6,7 @@ import { routes } from "@/lib/routes";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui";
 import { Select } from "@/components/ui/Select";
+import { EmptyState } from "@/components/ui/EmptyState";
 import { StudentStatus } from "@/types";
 import type { Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
@@ -71,16 +72,14 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
       </div>
 
       {filteredApplications.length === 0 && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <h2 className="font-serif text-xl font-semibold text-foreground">
-            No applications found
-          </h2>
-          <p className="mx-auto mt-2 max-w-sm text-slate">
-            {statusFilter === "ALL"
+        <EmptyState
+          title="No applications found"
+          description={
+            statusFilter === "ALL"
               ? "Applications will appear here once parents begin submitting student details."
-              : "No applications match the selected status filter."}
-          </p>
-        </div>
+              : "No applications match the selected status filter."
+          }
+        />
       )}
 
       {filteredApplications.length > 0 && (

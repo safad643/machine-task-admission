@@ -2,12 +2,13 @@ import Link from "next/link";
 import { routes } from "@/lib/routes";
 import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
-import { DashboardShell } from "@/components/dashboard/DashboardShell";
+import { PageShell } from "@/components/PageShell";
 import { StatsGrid } from "@/components/dashboard/StatsGrid";
 import { RecentTable } from "@/components/dashboard/RecentTable";
 import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
 import { getStatusCounts } from "@/lib/status-utils";
 import { Button } from "@/components/ui";
+import { EmptyState } from "@/components/ui/EmptyState";
 import type { Student } from "@/types";
 
 export default async function AdmissionTeamDashboardPage() {
@@ -33,15 +34,10 @@ export default async function AdmissionTeamDashboardPage() {
       }
     >
       {applications.length === 0 && (
-        <div className="rounded-2xl border border-stone bg-background p-12 text-center shadow-[0_2px_24px_-8px_rgba(16,16,46,0.08)]">
-          <h2 className="font-serif text-xl font-semibold text-foreground">
-            No applications yet
-          </h2>
-          <p className="mx-auto mt-2 max-w-sm text-slate">
-            Applications will appear here once parents begin submitting student
-            details.
-          </p>
-        </div>
+        <EmptyState
+          title="No applications yet"
+          description="Applications will appear here once parents begin submitting student details."
+        />
       )}
 
       {applications.length > 0 && (
