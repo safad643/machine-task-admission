@@ -11,7 +11,7 @@ import { scoreSchema, type ScoreFormData } from "@/lib/schemas";
 import { PageShell } from "@/components/PageShell";
 import { StudentStatus, type Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
-import { Button, Input } from "@/components/ui";
+import { Alert, Button, Input } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -61,22 +61,7 @@ export default function ScoreForm({ application, id }: ScoreFormProps) {
         label: "Back to application details",
       }}
     >
-      {formError && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{formError}</p>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                clearFormError();
-              }}
-            >
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
+      <Alert message={formError} onDismiss={clearFormError} dismissLabel="Try again" className="mb-6" />
 
       <Card>
         <CardHeader>

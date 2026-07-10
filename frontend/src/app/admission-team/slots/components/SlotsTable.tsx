@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useExamSlots } from "@/hooks";
-import { Button, Badge, Confirmation } from "@/components/ui";
+import { Alert, Button, Badge, Confirmation } from "@/components/ui";
 import {
   Card,
   CardContent,
@@ -44,16 +44,7 @@ export function SlotsTable({ slots }: SlotsTableProps) {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {error && (
-            <div className="mb-4 rounded-xl border border-danger/20 bg-danger/10 p-3">
-              <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm font-medium text-danger-text">{error}</p>
-                <Button variant="outline" size="sm" onClick={() => clearError()}>
-                  Clear
-                </Button>
-              </div>
-            </div>
-          )}
+          <Alert message={error} onDismiss={clearError} dismissLabel="Clear" className="mb-4" />
 
           {slots.length === 0 && (
             <div className="py-12 text-center">

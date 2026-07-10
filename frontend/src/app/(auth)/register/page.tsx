@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRegister } from "@/hooks/useAuth";
 import { routes } from "@/lib/routes";
 import { registerSchema, type RegisterFormData } from "@/lib/schemas";
-import { Button } from "@/components/ui";
+import { Alert, Button } from "@/components/ui";
 import { Input } from "@/components/ui";
 
 export default function RegisterPage() {
@@ -71,11 +71,7 @@ export default function RegisterPage() {
             {...register("password")}
           />
 
-          {error && (
-            <p className="rounded-lg bg-danger/10 px-3.5 py-2.5 text-sm font-medium text-danger-text">
-              {error}
-            </p>
-          )}
+          <Alert message={error} className="rounded-lg" />
 
           <Button
             type="submit"

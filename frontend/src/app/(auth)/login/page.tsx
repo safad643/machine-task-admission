@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useLogin } from "@/hooks/useAuth";
 import { routes, getDashboardForRole } from "@/lib/routes";
 import { loginSchema, type LoginFormData } from "@/lib/schemas";
-import { Button } from "@/components/ui";
+import { Alert, Button } from "@/components/ui";
 import { Input } from "@/components/ui";
 
 export default function LoginPage() {
@@ -61,11 +61,7 @@ export default function LoginPage() {
             {...register("password")}
           />
 
-          {error && (
-            <p className="rounded-lg bg-danger/10 px-3.5 py-2.5 text-sm font-medium text-danger-text">
-              {error}
-            </p>
-          )}
+          <Alert message={error} className="rounded-lg" />
 
           <Button
             type="submit"

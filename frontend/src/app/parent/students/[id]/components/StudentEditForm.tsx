@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Input, Select } from "@/components/ui";
+import { Alert, Button, Input, Select } from "@/components/ui";
 import { useStudentEditForm, mapStudentToFormData } from "@/hooks";
 import { Gender, Grade, type Student } from "@/types";
 import { formatGradeLabel } from "@/lib/utils";
@@ -89,22 +89,7 @@ export function StudentEditForm({
           ))}
         </Select>
 
-        {error && (
-          <div className="rounded-lg border border-danger/20 bg-danger/10 p-3.5">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm font-medium text-danger-text">{error}</p>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => {
-                  clearError();
-                }}
-              >
-                Dismiss
-              </Button>
-            </div>
-          </div>
-        )}
+        <Alert message={error} onDismiss={clearError} dismissLabel="Dismiss" className="rounded-lg" />
 
         <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
           <Button

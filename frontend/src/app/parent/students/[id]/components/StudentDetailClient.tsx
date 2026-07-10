@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useStudents } from "@/hooks";
 import { routes } from "@/lib/routes";
 import { PageShell } from "@/components/PageShell";
-import { Button } from "@/components/ui";
+import { Alert, Button } from "@/components/ui";
 import { Card } from "@/components/ui/Card";
 import { Student, StudentStatus } from "@/types";
 import { StudentDetailCard } from "./StudentDetailCard";
@@ -75,16 +75,7 @@ export function StudentDetailClient({ student, id }: StudentDetailClientProps) {
         </Card>
       )}
 
-      {error && (
-        <div className="mb-6 rounded-xl border border-danger/20 bg-danger/10 p-4">
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <p className="text-sm font-medium text-danger-text">{error}</p>
-            <Button variant="outline" size="sm" onClick={handleTryAgain}>
-              Try again
-            </Button>
-          </div>
-        </div>
-      )}
+      <Alert message={error} onDismiss={handleTryAgain} dismissLabel="Try again" className="mb-6" />
 
       {!isEditing && <StudentDetailCard student={student} />}
 
