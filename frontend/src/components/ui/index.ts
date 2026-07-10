@@ -22,3 +22,4 @@ export { Layout, type LayoutProps, type NavItem } from "./Layout";
 export { Confirmation, type ConfirmationProps } from "./Confirmation";
 export { EmptyState, type EmptyStateProps } from "./EmptyState";
 export { Alert, type AlertProps } from "./Alert";
+export { Pagination, type PaginationProps } from "./Pagination";

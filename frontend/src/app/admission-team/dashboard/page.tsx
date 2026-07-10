@@ -9,13 +9,19 @@ import { StatusBreakdown } from "@/components/dashboard/StatusBreakdown";
 import { getStatusCounts } from "@/lib/status-utils";
 import { Button } from "@/components/ui";
 import { EmptyState } from "@/components/ui/EmptyState";
-import type { Student } from "@/types";
+import type { PaginatedResponse, Student } from "@/types";
 
 export default async function AdmissionTeamDashboardPage() {
-  const applications = await fetchWithAuth<Student[]>(
+  const response = await fetchWithAuth<PaginatedResponse<Student>>(
     `${endpoints.admission.applications}?limit=5`
   );
 
+  const applications = Array.isArray(response)
+    ? response
+    : Array.isArray(response?.data)
+      ? response.data
+      : [];
+  const total = Array.isArray(response) ? applications.length : response.total;
   const statusCounts = getStatusCounts(applications);
 
   return (
@@ -42,7 +48,7 @@ export default async function AdmissionTeamDashboardPage() {
 
       {applications.length > 0 && (
         <div className="flex flex-col gap-6">
-          <StatsGrid total={applications.length} counts={statusCounts} />
+          <StatsGrid total={total} counts={statusCounts} />
 
           <div className="grid gap-6 lg:grid-cols-3">
             <RecentTable

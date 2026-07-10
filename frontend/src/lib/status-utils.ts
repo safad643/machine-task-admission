@@ -32,7 +32,7 @@ export function getStatusCounts<T extends { status: StudentStatus }>(
     statusOrder.map((status) => [status, 0])
   ) as Record<StudentStatus, number>;
 
-  for (const item of items) {
+  for (const item of items ?? []) {
     counts[item.status] = (counts[item.status] ?? 0) + 1;
   }
 

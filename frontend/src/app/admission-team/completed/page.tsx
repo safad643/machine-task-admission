@@ -4,19 +4,49 @@ import { endpoints } from "@/lib/endpoints";
 import { fetchWithAuth } from "@/lib/data";
 import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
+import { Pagination } from "@/components/ui";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Course } from "@/types";
-import type { Student } from "@/types";
+import type { PaginatedResponse, Student } from "@/types";
 import { formatGradeLabel, courseLabelMap } from "@/lib/utils";
 import { formatDate } from "@/lib/date-utils";
 
-export default async function CompletedAdmissionsPage() {
-  const completedApplications = await fetchWithAuth<Student[]>(
-    `${endpoints.admission.applications}?status=ADMISSION_COMPLETED&sort=updatedAt:desc`
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 10;
+
+interface CompletedAdmissionsPageProps {
+  searchParams: Promise<{ page?: string }> | { page?: string };
+}
+
+export default async function CompletedAdmissionsPage({
+  searchParams,
+}: CompletedAdmissionsPageProps) {
+  const params = await searchParams;
+  const page = Math.max(
+    1,
+    parseInt(params.page ?? String(DEFAULT_PAGE), 10) || DEFAULT_PAGE
   );
 
-  const completedCount = completedApplications.length;
+  const queryParams = new URLSearchParams();
+  queryParams.set("status", "ADMISSION_COMPLETED");
+  queryParams.set("sort", "updatedAt:desc");
+  queryParams.set("page", String(page));
+  queryParams.set("limit", String(DEFAULT_LIMIT));
+
+  const result = await fetchWithAuth<PaginatedResponse<Student>>(
+    `${endpoints.admission.applications}?${queryParams.toString()}`
+  );
+
+  const completedApplications = Array.isArray(result)
+    ? result
+    : Array.isArray(result?.data)
+      ? result.data
+      : [];
+  const completedCount = Array.isArray(result)
+    ? completedApplications.length
+    : result.total;
+  const totalPages = Array.isArray(result) ? 1 : result.totalPages;
 
   return (
     <PageShell
@@ -142,7 +172,7 @@ export default async function CompletedAdmissionsPage() {
                         <td className="px-6 py-4">
                           {application.assignedCourse ? (
                             <Badge variant="success" size="sm">
-                              {courseLabelMap[application.assignedCourse]}
+                              {courseLabelMap[application.assignedCourse as Course]}
                             </Badge>
                           ) : (
                             <span className="text-sm text-slate">—</span>
@@ -165,6 +195,10 @@ export default async function CompletedAdmissionsPage() {
                     ))}
                   </tbody>
                 </table>
+              </div>
+
+              <div className="mt-6">
+                <Pagination currentPage={page} totalPages={totalPages} />
               </div>
             </CardContent>
           </Card>

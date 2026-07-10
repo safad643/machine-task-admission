@@ -24,7 +24,14 @@ export class AdmissionService {
     status?: StudentStatus,
     limit?: number,
     sort?: string,
-  ): Promise<StudentDocument[]> {
+    page?: number,
+  ): Promise<{
+    data: StudentDocument[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
     if (status && !Object.values(StudentStatus).includes(status)) {
       throw new BadRequestException('Invalid status filter');
     }
@@ -36,16 +43,30 @@ export class AdmissionService {
 
     const sortOption = this.parseSort(sort);
 
-    const query = this.studentModel
-      .find(filter)
-      .populate('slotId')
-      .sort(sortOption);
+    const resolvedLimit = limit && limit > 0 ? limit : 10;
+    const resolvedPage = page && page > 0 ? page : 1;
+    const skip = (resolvedPage - 1) * resolvedLimit;
 
-    if (limit && limit > 0) {
-      query.limit(limit);
-    }
+    const [data, total] = await Promise.all([
+      this.studentModel
+        .find(filter)
+        .populate('slotId')
+        .sort(sortOption)
+        .skip(skip)
+        .limit(resolvedLimit)
+        .exec(),
+      this.studentModel.countDocuments(filter).exec(),
+    ]);
 
-    return query.exec();
+    const totalPages = Math.ceil(total / resolvedLimit);
+
+    return {
+      data,
+      total,
+      page: resolvedPage,
+      limit: resolvedLimit,
+      totalPages,
+    };
   }
 
   private parseSort(sort?: string): Record<string, 1 | -1> {

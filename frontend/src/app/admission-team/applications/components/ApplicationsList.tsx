@@ -1,12 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { routes } from "@/lib/routes";
 import { PageShell } from "@/components/PageShell";
 import { Badge } from "@/components/ui/Badge";
-import { Button } from "@/components/ui";
-import { Select } from "@/components/ui/Select";
+import { Button, Pagination, Select } from "@/components/ui";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Card, CardContent } from "@/components/ui/Card";
 import { StudentStatus } from "@/types";
@@ -29,15 +28,35 @@ const filterOptions: Array<{ value: "ALL" | StudentStatus; label: string }> = [
 
 interface ApplicationsListProps {
   applications: Student[];
+  total: number;
+  page: number;
+  totalPages: number;
+  status: "ALL" | StudentStatus;
 }
 
-export function ApplicationsList({ applications }: ApplicationsListProps) {
-  const [statusFilter, setStatusFilter] = useState<"ALL" | StudentStatus>("ALL");
+export function ApplicationsList({
+  applications,
+  total,
+  page,
+  totalPages,
+  status,
+}: ApplicationsListProps) {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const filteredApplications =
-    statusFilter === "ALL"
-      ? applications
-      : applications.filter((application) => application.status === statusFilter);
+  const handleStatusChange = (newStatus: "ALL" | StudentStatus) => {
+    const params = new URLSearchParams(searchParams?.toString() ?? "");
+
+    if (newStatus === "ALL") {
+      params.delete("status");
+    } else {
+      params.set("status", newStatus);
+    }
+
+    params.set("page", "1");
+    router.push(`${pathname}?${params.toString()}`);
+  };
 
   return (
     <PageShell
@@ -53,9 +72,9 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
         <div className="w-full sm:w-72">
           <Select
             label="Filter by status"
-            value={statusFilter}
+            value={status}
             onChange={(event) =>
-              setStatusFilter(event.target.value as "ALL" | StudentStatus)
+              handleStatusChange(event.target.value as "ALL" | StudentStatus)
             }
           >
             {filterOptions.map((option) => (
@@ -65,83 +84,92 @@ export function ApplicationsList({ applications }: ApplicationsListProps) {
             ))}
           </Select>
         </div>
+
+        <p className="text-sm text-slate">
+          Showing {applications.length} of {total} application
+          {total === 1 ? "" : "s"}
+        </p>
       </div>
 
-      {filteredApplications.length === 0 && (
+      {applications.length === 0 && (
         <EmptyState
           title="No applications found"
           description={
-            statusFilter === "ALL"
+            status === "ALL"
               ? "Applications will appear here once parents begin submitting student details."
               : "No applications match the selected status filter."
           }
         />
       )}
 
-      {filteredApplications.length > 0 && (
-        <Card>
-          <CardContent>
-            <div className="overflow-x-auto">
-              <table className="min-w-full border-collapse">
-                <thead>
-                  <tr className="border-b border-stone bg-muted">
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Name
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Grade
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Status
-                    </th>
-                    <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
-                      Created At
-                    </th>
-                    <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filteredApplications.map((application) => (
-                    <tr
-                      key={application._id}
-                      className="border-b border-stone last:border-b-0 hover:bg-paper/50"
-                    >
-                      <td className="px-6 py-4 text-sm font-medium text-foreground">
-                        {application.studentName}
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate">
-                        {formatGradeLabel(application.applyingGrade)}
-                      </td>
-                      <td className="px-6 py-4">
-                        <Badge
-                          variant={statusVariantMap[application.status]}
-                          size="sm"
-                        >
-                          {statusLabelMap[application.status]}
-                        </Badge>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate">
-                        {formatDate(application.createdAt)}
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <Link
-                          href={routes.admissionTeam.applicationDetail(
-                            application._id
-                          )}
-                          className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
-                        >
-                          View
-                        </Link>
-                      </td>
+      {applications.length > 0 && (
+        <div className="flex flex-col gap-6">
+          <Card>
+            <CardContent>
+              <div className="overflow-x-auto">
+                <table className="min-w-full border-collapse">
+                  <thead>
+                    <tr className="border-b border-stone bg-muted">
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Name
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Grade
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Status
+                      </th>
+                      <th className="px-6 py-4 text-left text-sm font-semibold text-foreground">
+                        Created At
+                      </th>
+                      <th className="px-6 py-4 text-right text-sm font-semibold text-foreground">
+                        Actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+                  </thead>
+                  <tbody>
+                    {applications.map((application) => (
+                      <tr
+                        key={application._id}
+                        className="border-b border-stone last:border-b-0 hover:bg-paper/50"
+                      >
+                        <td className="px-6 py-4 text-sm font-medium text-foreground">
+                          {application.studentName}
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate">
+                          {formatGradeLabel(application.applyingGrade)}
+                        </td>
+                        <td className="px-6 py-4">
+                          <Badge
+                            variant={statusVariantMap[application.status]}
+                            size="sm"
+                          >
+                            {statusLabelMap[application.status]}
+                          </Badge>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate">
+                          {formatDate(application.createdAt)}
+                        </td>
+                        <td className="px-6 py-4 text-right">
+                          <Link
+                            href={routes.admissionTeam.applicationDetail(
+                              application._id
+                            )}
+                            className="text-sm font-medium text-seal underline decoration-seal/30 underline-offset-4 transition-colors hover:text-seal-light hover:decoration-seal"
+                          >
+                            View
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Pagination currentPage={page} totalPages={totalPages} />
+        </div>
       )}
     </PageShell>
   );
